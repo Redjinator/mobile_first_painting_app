@@ -15,7 +15,11 @@
       "Bash(git branch -M main)",
       "Bash(git checkout -b develop)",
       "Bash(git commit -m \"feat: configure mobile-first theme with Tailwind CSS\")",
-      "Bash(git commit -m \"test: configure Jest and React Testing Library\")"
+      "Bash(git commit -m \"test: configure Jest and React Testing Library\")",
+      "Bash(npm install @prisma/client)",
+      "Bash(npm install -D prisma)",
+      "Bash(npx prisma init)",
+      "Bash(git commit -m \"chore: install and configure Prisma ORM\")"
     ],
     "deny": [],
     "ask": []
