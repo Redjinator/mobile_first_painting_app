@@ -45,7 +45,11 @@
       "Bash(pkill -f \"prisma dev\")",
       "Bash(pkill -f \"prisma studio\")",
       "Bash(node -e \"const bcrypt = require(''bcryptjs''); Promise.all([bcrypt.hash(''Admin123!'', 10), bcrypt.hash(''Painter123!'', 10)]).then(([admin, painter]) => { console.log(''\\nAdmin123! hash:\\n'' + admin + ''\\n\\nPainter123! hash:\\n'' + painter + ''\\n''); })\")",
-      "Bash(docker-compose up -d)"
+      "Bash(docker-compose up -d)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nchore: switch database from Prisma Postgres to SQLite for local development\n\n- Update Prisma schema to use SQLite provider\n- Change totalHours from Decimal to Float (SQLite compatible)\n- Update DATABASE_URL to use file:./dev.db\n- Add Docker Compose config for optional PostgreSQL setup\n- Create seed-users-only script for quick user seeding\n- Successfully migrated and seeded database with test data\n- Update NEXTAUTH_URL to port 3005\n\nThis resolves database connection issues with Prisma Postgres.\n\nGenerated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(npm install zod)",
+      "Bash(curl http://localhost:3005/api/health)",
+      "Bash(curl http://localhost:3005/api/test/protected)"
     ],
     "deny": [],
     "ask": []
