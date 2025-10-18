@@ -23,7 +23,10 @@
       "Bash(npx prisma format)",
       "Bash(npx prisma generate)",
       "Bash(npm install bcryptjs tsx)",
-      "Bash(npm install -D @types/bcryptjs)"
+      "Bash(npm install -D @types/bcryptjs)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: create complete database schema with 9 models\n\n- Add comprehensive Prisma schema with all models and enums\n- Create User, JobSite, Floor, Area, Task models\n- Create Assignment, TimeEntry, ActivityLog, Flag models\n- Add proper relationships, indexes, and constraints\n- Generate Prisma client\n- Create database setup documentation\n- Add comprehensive seed script with realistic test data\n- Install bcryptjs and tsx for seed script\n\nGenerated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(npm install next-auth@beta)",
+      "Bash(mkdir -p src/lib)"
     ],
     "deny": [],
     "ask": []
