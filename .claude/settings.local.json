@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --eslint --no-src-dir --import-alias \"@/*\")",
+      "Bash(npm init -y)",
+      "Bash(npm install next@latest react@latest react-dom@latest typescript @types/react @types/node)",
+      "Bash(npm install -D tailwindcss postcss autoprefixer eslint eslint-config-next)",
+      "Bash(npx tailwindcss init -p)",
+      "Bash(npm run dev)",
+      "Bash(npm install -D jest @testing-library/react @testing-library/jest-dom @testing-library/user-event jest-environment-jsdom @types/jest)",
+      "Bash(npm test -- --passWithNoTests)",
+      "Bash(git init)",
+      "Bash(git add .)",
+      "Bash(git commit -m \"chore: initialize Next.js project with TypeScript and Tailwind\")",
+      "Bash(git branch -M main)",
+      "Bash(git checkout -b develop)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
