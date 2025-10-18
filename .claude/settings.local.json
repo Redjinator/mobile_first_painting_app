@@ -32,7 +32,20 @@
       "Bash(git commit -m \"$(cat <<''EOF''\nfeat: create mobile-first login page with NextAuth integration\n\n- Install react-hook-form for form handling\n- Create auth layout with gradient background\n- Build mobile-first login page with:\n  * Email and password fields with validation\n  * Loading states and error messages\n  * Touch-friendly buttons (min 44px height)\n  * Responsive design (mobile-first, scales up)\n  * Demo credentials display for development\n- Create placeholder admin and employee dashboards\n- Create unauthorized access page\n- Update NEXTAUTH_URL to correct port (3001)\n- Implement role-based redirects after login\n\nGenerated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(git commit -m \"$(cat <<''EOF''\nfeat: create auth helper hooks and components\n\n- Create useCurrentUser hook for accessing session data\n  * Returns user, isLoading, and role helper flags\n  * Provides isAdmin, isSupervisor, isEmployee flags\n- Create useRequireAuth hook for protecting pages\n  * Redirects if not authenticated or not authorized\n  * Supports required role parameter\n- Create ProtectedRoute component wrapper\n  * Shows loading state while checking auth\n  * Redirects if not authorized\n- Create UserMenu component\n  * Mobile-friendly dropdown menu\n  * Shows user name, email, and role\n  * Logout and profile links\n  * Touch-friendly buttons (min 44px)\n- Create SessionProvider wrapper\n  * Provides NextAuth session context to client components\n- Update root layout to include SessionProvider\n- Update admin and employee dashboards to use UserMenu\n\nGenerated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(npm install -D @tailwindcss/postcss)",
-      "Bash(git add -A)"
+      "Bash(git add -A)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfix: upgrade Tailwind CSS to v4 with @tailwindcss/postcss\n\n- Install @tailwindcss/postcss package for Tailwind CSS v4\n- Update PostCSS config to use @tailwindcss/postcss instead of tailwindcss\n- Update globals.css to use @import \"tailwindcss\" syntax\n- Add @theme directive for custom color palette and breakpoints\n- Move theme configuration from tailwind.config.ts to CSS\n- Update NEXTAUTH_URL to port 3003\n\nThis fixes the PostCSS plugin error when running the dev server.\n\nGenerated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git add tsconfig.json)",
+      "Bash(git commit -m \"fix: update TypeScript path alias to resolve @/ to src directory\")",
+      "Bash(npx prisma studio --port 5555)",
+      "Bash(npm run prisma:seed)",
+      "Bash(npx prisma dev)",
+      "Bash(npx prisma migrate dev --name init)",
+      "Bash(tsx prisma/seed-users-only.ts)",
+      "Bash(npx tsx prisma/seed-users-only.ts)",
+      "Bash(pkill -f \"prisma dev\")",
+      "Bash(pkill -f \"prisma studio\")",
+      "Bash(node -e \"const bcrypt = require(''bcryptjs''); Promise.all([bcrypt.hash(''Admin123!'', 10), bcrypt.hash(''Painter123!'', 10)]).then(([admin, painter]) => { console.log(''\\nAdmin123! hash:\\n'' + admin + ''\\n\\nPainter123! hash:\\n'' + painter + ''\\n''); })\")",
+      "Bash(docker-compose up -d)"
     ],
     "deny": [],
     "ask": []
