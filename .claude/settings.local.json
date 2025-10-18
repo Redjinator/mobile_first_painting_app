@@ -19,7 +19,11 @@
       "Bash(npm install @prisma/client)",
       "Bash(npm install -D prisma)",
       "Bash(npx prisma init)",
-      "Bash(git commit -m \"chore: install and configure Prisma ORM\")"
+      "Bash(git commit -m \"chore: install and configure Prisma ORM\")",
+      "Bash(npx prisma format)",
+      "Bash(npx prisma generate)",
+      "Bash(npm install bcryptjs tsx)",
+      "Bash(npm install -D @types/bcryptjs)"
     ],
     "deny": [],
     "ask": []

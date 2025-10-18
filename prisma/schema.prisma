@@ -6,10 +6,271 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum UserRole {
+  ADMIN
+  SUPERVISOR
+  EMPLOYEE
+}
+
+enum AreaType {
+  ROOM
+  HALLWAY
+  BATHROOM
+  CLOSET
+}
+
+enum AssignableType {
+  JOB_SITE
+  FLOOR
+  AREA
+}
+
+enum FlagType {
+  ISSUE
+  WAITING_MATERIALS
+  INSPECTION_NEEDED
+  OTHER
+}
+
+enum FlagStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+}
+
+// ============================================
+// MODELS
+// ============================================
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  firstName    String   @map("first_name")
+  lastName     String   @map("last_name")
+  role         UserRole
+  phone        String?
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  supervisedSites JobSite[]     @relation("SupervisorSites")
+  assignments     Assignment[]  @relation("UserAssignments")
+  timeEntries     TimeEntry[]
+  activityLogs    ActivityLog[]
+  createdFlags    Flag[]        @relation("FlagCreator")
+  resolvedFlags   Flag[]        @relation("FlagResolver")
+  assignmentsMade Assignment[]  @relation("Assigner")
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model JobSite {
+  id                   String   @id @default(cuid())
+  name                 String
+  address              String
+  notes                String?
+  supervisorId         String   @map("supervisor_id")
+  startDate            DateTime @map("start_date")
+  completionPercentage Int      @default(0) @map("completion_percentage")
+  isActive             Boolean  @default(true) @map("is_active")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  supervisor  User         @relation("SupervisorSites", fields: [supervisorId], references: [id], onDelete: Cascade)
+  floors      Floor[]
+  assignments Assignment[]
+  timeEntries TimeEntry[]
+  flags       Flag[]
+
+  @@index([supervisorId])
+  @@index([isActive])
+  @@map("job_sites")
+}
+
+model Floor {
+  id                   String   @id @default(cuid())
+  jobSiteId            String   @map("job_site_id")
+  name                 String
+  floorNumber          Int      @map("floor_number")
+  completionPercentage Int      @default(0) @map("completion_percentage")
+  notes                String?
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  jobSite     JobSite      @relation(fields: [jobSiteId], references: [id], onDelete: Cascade)
+  areas       Area[]
+  assignments Assignment[]
+  timeEntries TimeEntry[]
+  flags       Flag[]
+
+  @@unique([jobSiteId, floorNumber])
+  @@index([jobSiteId])
+  @@map("floors")
+}
+
+model Area {
+  id                   String   @id @default(cuid())
+  floorId              String   @map("floor_id")
+  parentAreaId         String?  @map("parent_area_id")
+  name                 String
+  areaType             AreaType @map("area_type")
+  completionPercentage Int      @default(0) @map("completion_percentage")
+  notes                String?
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  floor       Floor        @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  parentArea  Area?        @relation("AreaHierarchy", fields: [parentAreaId], references: [id], onDelete: Cascade)
+  subAreas    Area[]       @relation("AreaHierarchy")
+  tasks       Task[]
+  assignments Assignment[]
+  timeEntries TimeEntry[]
+  flags       Flag[]
+
+  @@index([floorId])
+  @@index([parentAreaId])
+  @@map("areas")
+}
+
+model Task {
+  id                   String   @id @default(cuid())
+  areaId               String   @map("area_id")
+  name                 String
+  taskOrder            Int      @map("task_order")
+  completionPercentage Int      @default(0) @map("completion_percentage")
+  notes                String?
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  area         Area          @relation(fields: [areaId], references: [id], onDelete: Cascade)
+  activityLogs ActivityLog[]
+
+  @@unique([areaId, taskOrder])
+  @@index([areaId])
+  @@map("tasks")
+}
+
+model Assignment {
+  id             String         @id @default(cuid())
+  userId         String         @map("user_id")
+  assignableType AssignableType @map("assignable_type")
+  assignableId   String         @map("assignable_id")
+  jobSiteId      String?        @map("job_site_id")
+  floorId        String?        @map("floor_id")
+  areaId         String?        @map("area_id")
+  assignedAt     DateTime       @default(now()) @map("assigned_at")
+  assignedBy     String         @map("assigned_by")
+
+  // Relations
+  user     User     @relation("UserAssignments", fields: [userId], references: [id], onDelete: Cascade)
+  assigner User     @relation("Assigner", fields: [assignedBy], references: [id])
+  jobSite  JobSite? @relation(fields: [jobSiteId], references: [id], onDelete: Cascade)
+  floor    Floor?   @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  area     Area?    @relation(fields: [areaId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, assignableType, assignableId])
+  @@index([userId])
+  @@index([assignableType, assignableId])
+  @@index([jobSiteId])
+  @@index([floorId])
+  @@index([areaId])
+  @@map("assignments")
+}
+
+model TimeEntry {
+  id         String    @id @default(cuid())
+  userId     String    @map("user_id")
+  jobSiteId  String    @map("job_site_id")
+  floorId    String?   @map("floor_id")
+  areaId     String?   @map("area_id")
+  clockIn    DateTime  @map("clock_in")
+  clockOut   DateTime? @map("clock_out")
+  totalHours Decimal?  @map("total_hours") @db.Decimal(5, 2)
+  notes      String?
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobSite JobSite @relation(fields: [jobSiteId], references: [id], onDelete: Cascade)
+  floor   Floor?  @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  area    Area?   @relation(fields: [areaId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([jobSiteId])
+  @@index([floorId])
+  @@index([areaId])
+  @@index([clockIn])
+  @@map("time_entries")
+}
+
+model ActivityLog {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id")
+  action     String
+  changes    Json?
+  taskId     String?  @map("task_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task Task? @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([taskId])
+  @@index([createdAt])
+  @@map("activity_logs")
+}
+
+model Flag {
+  id            String     @id @default(cuid())
+  flaggableType String     @map("flaggable_type")
+  flaggableId   String     @map("flaggable_id")
+  jobSiteId     String?    @map("job_site_id")
+  floorId       String?    @map("floor_id")
+  areaId        String?    @map("area_id")
+  flagType      FlagType   @map("flag_type")
+  description   String
+  status        FlagStatus @default(OPEN)
+  createdBy     String     @map("created_by")
+  resolvedBy    String?    @map("resolved_by")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  resolvedAt    DateTime?  @map("resolved_at")
+
+  // Relations
+  creator  User     @relation("FlagCreator", fields: [createdBy], references: [id])
+  resolver User?    @relation("FlagResolver", fields: [resolvedBy], references: [id])
+  jobSite  JobSite? @relation(fields: [jobSiteId], references: [id], onDelete: Cascade)
+  floor    Floor?   @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  area     Area?    @relation(fields: [areaId], references: [id], onDelete: Cascade)
+
+  @@index([flaggableType, flaggableId])
+  @@index([status])
+  @@index([createdBy])
+  @@index([jobSiteId])
+  @@index([floorId])
+  @@index([areaId])
+  @@map("flags")
 }
