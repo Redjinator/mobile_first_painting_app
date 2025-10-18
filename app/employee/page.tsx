@@ -1,5 +1,6 @@
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { UserMenu } from '@/components/auth/UserMenu';
 
 export default async function EmployeePage() {
   const session = await auth();
@@ -9,12 +10,20 @@ export default async function EmployeePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Employee Dashboard
-          </h1>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <h1 className="text-xl font-bold text-gray-900">Employee Dashboard</h1>
+            <UserMenu />
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8">
           <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
             <p className="text-sm text-green-800">
               Welcome, {session.user.firstName} {session.user.lastName}!
@@ -27,7 +36,7 @@ export default async function EmployeePage() {
             This is the employee dashboard. More features coming soon!
           </p>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

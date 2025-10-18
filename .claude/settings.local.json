@@ -28,7 +28,8 @@
       "Bash(npm install next-auth@beta)",
       "Bash(mkdir -p src/lib)",
       "Bash(git commit -m \"$(cat <<''EOF''\nfeat: configure NextAuth.js with JWT authentication\n\n- Install next-auth@beta (v5)\n- Create auth configuration in src/lib/auth.ts\n- Implement credentials provider with email/password\n- Add JWT strategy with custom session callbacks\n- Create auth utilities for password verification\n- Add middleware to protect /admin and /employee routes\n- Configure role-based access control\n- Update .env with NEXTAUTH_SECRET and NEXTAUTH_URL\n\nGenerated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
-      "Bash(npm install react-hook-form)"
+      "Bash(npm install react-hook-form)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: create mobile-first login page with NextAuth integration\n\n- Install react-hook-form for form handling\n- Create auth layout with gradient background\n- Build mobile-first login page with:\n  * Email and password fields with validation\n  * Loading states and error messages\n  * Touch-friendly buttons (min 44px height)\n  * Responsive design (mobile-first, scales up)\n  * Demo credentials display for development\n- Create placeholder admin and employee dashboards\n- Create unauthorized access page\n- Update NEXTAUTH_URL to correct port (3001)\n- Implement role-based redirects after login\n\nGenerated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []
