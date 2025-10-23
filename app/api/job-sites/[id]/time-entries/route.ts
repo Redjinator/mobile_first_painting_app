@@ -4,15 +4,15 @@ import { TimeEntryService } from '@/services/timeEntryService';
 import { errorHandler, successResponse } from '@/lib/api/utils';
 
 /**
- * GET /api/job-sites/[siteId]/time-entries
+ * GET /api/job-sites/[id]/time-entries
  * Get time entries for a job site
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ siteId: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { siteId } = await params;
+    const { id: siteId } = await params;
     const session = await auth();
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

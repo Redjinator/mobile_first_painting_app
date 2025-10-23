@@ -6,15 +6,15 @@ import { validate } from '@/lib/api/validation';
 import { assignToSiteSchema } from '@/lib/validations/assignment';
 
 /**
- * GET /api/job-sites/[siteId]/assignments
+ * GET /api/job-sites/[id]/assignments
  * Get all assignments for a job site (hierarchical)
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ siteId: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { siteId } = await params;
+    const { id: siteId } = await params;
     const session = await auth();
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -33,15 +33,15 @@ export async function GET(
 }
 
 /**
- * POST /api/job-sites/[siteId]/assignments
+ * POST /api/job-sites/[id]/assignments
  * Assign painter to entire job site
  */
 export async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ siteId: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { siteId } = await params;
+    const { id: siteId } = await params;
     const session = await auth();
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
