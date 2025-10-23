@@ -4,12 +4,14 @@ import type { ApiResponse, PaginatedResponse } from '@/types/api';
 // Success response helper
 export function successResponse<T>(
   data: T,
+  message?: string,
   statusCode: number = 200
 ): NextResponse<ApiResponse<T>> {
   return NextResponse.json(
     {
       success: true,
       data,
+      ...(message && { message }),
     },
     { status: statusCode }
   );
@@ -57,8 +59,8 @@ export function paginatedResponse<T>(
 }
 
 // Created response helper
-export function createdResponse<T>(data: T): NextResponse<ApiResponse<T>> {
-  return successResponse(data, 201);
+export function createdResponse<T>(data: T, message?: string): NextResponse<ApiResponse<T>> {
+  return successResponse(data, message, 201);
 }
 
 // No content response helper

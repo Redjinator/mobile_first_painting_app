@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
       user.id
     );
 
-    return successResponse(jobSite, 201);
+    return successResponse(jobSite, 'Job site created successfully', 201);
   } catch (error) {
     const { statusCode, body } = handleApiError(error);
     return Response.json(body, { status: statusCode });

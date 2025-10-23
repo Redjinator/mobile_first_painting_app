@@ -65,3 +65,8 @@ export function validatePartial<T extends z.ZodRawShape>(
   const partialSchema = schema.partial();
   return validateRequestBody(partialSchema, data) as any;
 }
+
+// Generic validate function (alias for validateRequestBody)
+export function validate<T>(schema: ZodSchema<T>, data: unknown): T {
+  return validateRequestBody(schema, data);
+}
