@@ -16,7 +16,7 @@ async function main() {
       lastName: 'User',
       passwordHash: await hash('Admin123!', 10),
       role: 'ADMIN',
-      phoneNumber: '(555) 000-0001',
+      phone: '(555) 000-0001',
       isActive: true,
     },
   });
@@ -30,7 +30,7 @@ async function main() {
       lastName: 'Painter',
       passwordHash: await hash('Painter123!', 10),
       role: 'EMPLOYEE',
-      phoneNumber: '(555) 001-0001',
+      phone: '(555) 001-0001',
       isActive: true,
     },
   });

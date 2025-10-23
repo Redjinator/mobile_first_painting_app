@@ -39,7 +39,7 @@ export function validateRequestBody<T>(schema: ZodSchema<T>, data: unknown): T {
     return schema.parse(data);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Validation failed', error.errors);
+      throw new ValidationError('Validation failed', error.issues);
     }
     throw error;
   }
@@ -51,7 +51,7 @@ export function validateQueryParams<T>(schema: ZodSchema<T>, params: unknown): T
     return schema.parse(params);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Invalid query parameters', error.errors);
+      throw new ValidationError('Invalid query parameters', error.issues);
     }
     throw error;
   }
@@ -63,5 +63,5 @@ export function validatePartial<T extends z.ZodRawShape>(
   data: unknown
 ): Partial<z.infer<typeof schema>> {
   const partialSchema = schema.partial();
-  return validateRequestBody(partialSchema, data);
+  return validateRequestBody(partialSchema, data) as any;
 }

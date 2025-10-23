@@ -10,13 +10,14 @@ import { requireAuth } from '@/lib/api/auth';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await requireAuth();
+    const { id } = await params;
 
     const hierarchy = await jobSiteService.getJobSiteHierarchy(
-      params.id,
+      id,
       user.id,
       user.role
     );

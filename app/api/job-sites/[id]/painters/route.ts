@@ -10,12 +10,13 @@ import { requireAuth } from '@/lib/api/auth';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await requireAuth();
+    const { id } = await params;
 
-    const painters = await jobSiteService.getActivePainters(params.id);
+    const painters = await jobSiteService.getActivePainters(id);
 
     return successResponse(painters);
   } catch (error) {

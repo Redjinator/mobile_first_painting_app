@@ -13,13 +13,14 @@ import { UserRole } from '@prisma/client';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await requireAuth();
+    const { id } = await params;
 
     const jobSite = await jobSiteService.getJobSiteById(
-      params.id,
+      id,
       user.id,
       user.role
     );
@@ -37,10 +38,11 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await requireAuth();
+    const { id } = await params;
 
     // Parse and validate request body
     const body = await request.json();
@@ -48,7 +50,7 @@ export async function PATCH(
 
     // Update job site
     const jobSite = await jobSiteService.updateJobSite(
-      params.id,
+      id,
       validatedData as any, // Zod validated data matches the DTO
       user.id,
       user.role
@@ -67,13 +69,14 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await requireRole(UserRole.ADMIN);
+    const { id } = await params;
 
     const result = await jobSiteService.deleteJobSite(
-      params.id,
+      id,
       user.id,
       user.role
     );
