@@ -122,14 +122,40 @@ This file tracks completed milestones and commits for easy conversation recovery
   - Prevent duplicate assignments and clock-ins
   - Block removal of assignments with active time entries
 
+#### ✅ Milestone 8: Activity Logs & Flags API
+- **Status**: Complete
+- **Commits**:
+  - `fix: consolidate dynamic route parameters to use [id] consistently`
+  - `feat: implement activity logs and flags API (Milestone 8)`
+- **Activity Logs API Routes**:
+  - `GET /api/activity-logs` - Query activity logs with filters
+  - `GET /api/job-sites/[id]/activity` - Get recent activity for a site
+- **Flags API Routes**:
+  - `GET/POST /api/flags` - List and create flags
+  - `GET/PATCH/DELETE /api/flags/[id]` - Single flag operations
+  - `POST /api/flags/[id]/resolve` - Resolve a flag
+  - `GET /api/job-sites/[id]/flags` - Get flags for a site
+- **Key Features**:
+  - Activity logging with EntityType (JOB_SITE, FLOOR, AREA, TASK) and Action (CREATE, UPDATE, DELETE, COMPLETE, START, PAUSE, RESUME)
+  - Flag types: ISSUE, WAITING_MATERIALS, INSPECTION_NEEDED, OTHER
+  - Flag statuses: OPEN, IN_PROGRESS, RESOLVED
+  - Role-based filtering for activity logs and flags
+  - Automatic activity logging in JobSiteService
+  - Support for flagging sites, floors, and areas
+- **Database Changes**:
+  - Added EntityType, Action, and FlaggableType enums to schema
+  - Updated ActivityLog model to use enum types
+  - Updated Flag model to use proper enums and renamed fields (flagType → type, creator/resolver → createdByUser/resolvedByUser)
+  - Recreated database migration with new schema
+
 ---
 
 ## Current Status
 
-**Last Completed**: Milestone 7 (Time Tracking & Assignments API)
-**Next Up**: Milestone 8 (Tasks API)
+**Last Completed**: Milestone 8 (Activity Logs & Flags API)
+**Next Up**: Milestone 9 (Tasks API)
 **Current Branch**: `develop`
-**Latest Commit**: `201b47c feat: implement assignments and time tracking API (Milestone 7)`
+**Latest Commit**: TBD
 
 ---
 
@@ -168,8 +194,9 @@ This file tracks completed milestones and commits for easy conversation recovery
 
 ## Notes for Next Session
 
-- Continue with Milestone 8: Tasks API
+- Continue with Milestone 9: Tasks API
 - Auth.ts has some type errors (pre-existing, not blocking)
 - Test suite needs updating for new routes
 - Consider adding API integration tests
-- All core backend APIs complete (Sites, Floors, Areas, Tasks, Assignments, Time Tracking)
+- All core backend APIs complete (Sites, Floors, Areas, Assignments, Time Tracking, Activity Logs, Flags)
+- Tasks are auto-created with Areas, but dedicated Tasks API endpoints still needed

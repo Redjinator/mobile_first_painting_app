@@ -49,6 +49,29 @@ enum FlagStatus {
   RESOLVED
 }
 
+enum EntityType {
+  JOB_SITE
+  FLOOR
+  AREA
+  TASK
+}
+
+enum Action {
+  CREATE
+  UPDATE
+  DELETE
+  COMPLETE
+  START
+  PAUSE
+  RESUME
+}
+
+enum FlaggableType {
+  JOB_SITE
+  FLOOR
+  AREA
+}
+
 // ============================================
 // MODELS
 // ============================================
@@ -224,14 +247,14 @@ model TimeEntry {
 }
 
 model ActivityLog {
-  id         String   @id @default(cuid())
-  userId     String   @map("user_id")
-  entityType String   @map("entity_type")
-  entityId   String   @map("entity_id")
-  action     String
+  id         String     @id @default(cuid())
+  userId     String     @map("user_id")
+  entityType EntityType @map("entity_type")
+  entityId   String     @map("entity_id")
+  action     Action
   changes    Json?
-  taskId     String?  @map("task_id")
-  createdAt  DateTime @default(now()) @map("created_at")
+  taskId     String?    @map("task_id")
+  createdAt  DateTime   @default(now()) @map("created_at")
 
   // Relations
   user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -245,26 +268,26 @@ model ActivityLog {
 }
 
 model Flag {
-  id            String     @id @default(cuid())
-  flaggableType String     @map("flaggable_type")
-  flaggableId   String     @map("flaggable_id")
-  jobSiteId     String?    @map("job_site_id")
-  floorId       String?    @map("floor_id")
-  areaId        String?    @map("area_id")
-  flagType      FlagType   @map("flag_type")
+  id            String        @id @default(cuid())
+  flaggableType FlaggableType @map("flaggable_type")
+  flaggableId   String        @map("flaggable_id")
+  jobSiteId     String?       @map("job_site_id")
+  floorId       String?       @map("floor_id")
+  areaId        String?       @map("area_id")
+  type          FlagType
   description   String
-  status        FlagStatus @default(OPEN)
-  createdBy     String     @map("created_by")
-  resolvedBy    String?    @map("resolved_by")
-  createdAt     DateTime   @default(now()) @map("created_at")
-  resolvedAt    DateTime?  @map("resolved_at")
+  status        FlagStatus    @default(OPEN)
+  createdBy     String        @map("created_by")
+  resolvedBy    String?       @map("resolved_by")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  resolvedAt    DateTime?     @map("resolved_at")
 
   // Relations
-  creator  User     @relation("FlagCreator", fields: [createdBy], references: [id])
-  resolver User?    @relation("FlagResolver", fields: [resolvedBy], references: [id])
-  jobSite  JobSite? @relation(fields: [jobSiteId], references: [id], onDelete: Cascade)
-  floor    Floor?   @relation(fields: [floorId], references: [id], onDelete: Cascade)
-  area     Area?    @relation(fields: [areaId], references: [id], onDelete: Cascade)
+  createdByUser  User     @relation("FlagCreator", fields: [createdBy], references: [id])
+  resolvedByUser User?    @relation("FlagResolver", fields: [resolvedBy], references: [id])
+  jobSite        JobSite? @relation(fields: [jobSiteId], references: [id], onDelete: Cascade)
+  floor          Floor?   @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  area           Area?    @relation(fields: [areaId], references: [id], onDelete: Cascade)
 
   @@index([flaggableType, flaggableId])
   @@index([status])

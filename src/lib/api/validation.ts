@@ -70,3 +70,8 @@ export function validatePartial<T extends z.ZodRawShape>(
 export function validate<T>(schema: ZodSchema<T>, data: unknown): T {
   return validateRequestBody(schema, data);
 }
+
+// Alias for validateQueryParams
+export function validateQuery<T>(schema: ZodSchema<T>, params: unknown): T {
+  return validateQueryParams(schema, params);
+}

@@ -338,7 +338,7 @@ export class JobSiteService {
     await prisma.activityLog.create({
       data: {
         userId: createdBy,
-        action: 'CREATE_JOB_SITE',
+        action: 'CREATE',
         entityType: 'JOB_SITE',
         entityId: jobSite.id,
       },
@@ -424,7 +424,7 @@ export class JobSiteService {
     await prisma.activityLog.create({
       data: {
         userId,
-        action: 'UPDATE_JOB_SITE',
+        action: 'UPDATE',
         entityType: 'JOB_SITE',
         entityId: id,
       },
@@ -465,7 +465,7 @@ export class JobSiteService {
     await prisma.activityLog.create({
       data: {
         userId,
-        action: 'DELETE_JOB_SITE',
+        action: 'DELETE',
         entityType: 'JOB_SITE',
         entityId: id,
       },
