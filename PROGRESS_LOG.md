@@ -95,14 +95,41 @@ This file tracks completed milestones and commits for easy conversation recovery
   - Progress calculation from child entities
   - Role-based permissions throughout
 
+#### ✅ Milestone 7: Time Tracking & Assignments API
+- **Status**: Complete
+- **Commits**:
+  - `feat: implement assignments and time tracking API (Milestone 7)`
+- **Assignments API Routes**:
+  - `GET /api/users/[userId]/assignments` - User's assignments
+  - `GET/POST /api/job-sites/[siteId]/assignments` - Site assignments
+  - `POST /api/floors/[floorId]/assignments` - Floor assignments
+  - `POST /api/areas/[areaId]/assignments` - Area assignments
+  - `DELETE /api/assignments/[id]` - Remove assignment
+  - `POST /api/assignments/bulk` - Bulk assign
+- **Time Entry API Routes**:
+  - `POST /api/time-entries/clock-in` - Clock in
+  - `POST /api/time-entries/clock-out` - Clock out
+  - `GET /api/time-entries/current` - Get active entry
+  - `GET /api/time-entries` - Get entries with filters
+  - `GET /api/job-sites/[siteId]/time-entries` - Site entries
+  - `GET /api/time-entries/active-workers` - Active workers
+  - `GET /api/users/[userId]/today-hours` - Today's hours
+- **Key Features**:
+  - Multi-level assignment hierarchy (site > floor > area)
+  - Assignment validation before clock-in
+  - Automatic hours calculation on clock-out
+  - Real-time active worker tracking
+  - Prevent duplicate assignments and clock-ins
+  - Block removal of assignments with active time entries
+
 ---
 
 ## Current Status
 
-**Last Completed**: Milestone 6 (Floors & Areas API)
-**Next Up**: Milestone 7 (Time Tracking & Assignments API)
+**Last Completed**: Milestone 7 (Time Tracking & Assignments API)
+**Next Up**: Milestone 8 (Tasks API)
 **Current Branch**: `develop`
-**Latest Commit**: `c4b5519 feat: implement floors and areas service layer and API routes`
+**Latest Commit**: `201b47c feat: implement assignments and time tracking API (Milestone 7)`
 
 ---
 
@@ -141,7 +168,8 @@ This file tracks completed milestones and commits for easy conversation recovery
 
 ## Notes for Next Session
 
-- Continue with Milestone 7: Time Tracking & Assignments API
+- Continue with Milestone 8: Tasks API
 - Auth.ts has some type errors (pre-existing, not blocking)
 - Test suite needs updating for new routes
 - Consider adding API integration tests
+- All core backend APIs complete (Sites, Floors, Areas, Tasks, Assignments, Time Tracking)
