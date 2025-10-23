@@ -155,7 +155,7 @@ This file tracks completed milestones and commits for easy conversation recovery
 **Last Completed**: Milestone 8 (Activity Logs & Flags API)
 **Next Up**: Milestone 9 (Tasks API)
 **Current Branch**: `develop`
-**Latest Commit**: TBD
+**Latest Commit**: `06ada7b feat: implement activity logs and flags API (Milestone 8)`
 
 ---
 
