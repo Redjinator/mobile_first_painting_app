@@ -40,6 +40,13 @@ export class ValidationError extends ApiError {
   }
 }
 
+export class BadRequestError extends ApiError {
+  constructor(message: string = 'Bad request', details?: any) {
+    super(400, message, 'BAD_REQUEST', details);
+    this.name = 'BadRequestError';
+  }
+}
+
 export class ConflictError extends ApiError {
   constructor(message: string = 'Conflict', details?: any) {
     super(409, message, 'CONFLICT', details);

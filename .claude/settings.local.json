@@ -49,7 +49,10 @@
       "Bash(git commit -m \"$(cat <<''EOF''\nchore: switch database from Prisma Postgres to SQLite for local development\n\n- Update Prisma schema to use SQLite provider\n- Change totalHours from Decimal to Float (SQLite compatible)\n- Update DATABASE_URL to use file:./dev.db\n- Add Docker Compose config for optional PostgreSQL setup\n- Create seed-users-only script for quick user seeding\n- Successfully migrated and seeded database with test data\n- Update NEXTAUTH_URL to port 3005\n\nThis resolves database connection issues with Prisma Postgres.\n\nGenerated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(npm install zod)",
       "Bash(curl http://localhost:3005/api/health)",
-      "Bash(curl http://localhost:3005/api/test/protected)"
+      "Bash(curl http://localhost:3005/api/test/protected)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: create API utilities and error handling\n\n- Add custom error classes (ApiError, NotFoundError, UnauthorizedError, etc.)\n- Create error handler for consistent API error responses\n- Add API response helpers (successResponse, errorResponse, paginatedResponse)\n- Create validation utilities with Zod schemas\n- Add API auth middleware helpers (requireAuth, requireRole, requireAdmin)\n- Create TypeScript types for API responses\n- Add health check endpoint at /api/health\n- Add protected test endpoint at /api/test/protected\n- Install Zod for request validation\n\nGenerated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx tsc --noEmit --pretty false)"
     ],
     "deny": [],
     "ask": []
