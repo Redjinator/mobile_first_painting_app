@@ -40,14 +40,21 @@ export default function LoginPage() {
         return;
       }
 
+      // Successful login - fetch session to determine role
+      const response = await fetch('/api/auth/session');
+      const session = await response.json();
+
       // Get the callback URL or redirect based on role
       const callbackUrl = searchParams.get('callbackUrl');
       if (callbackUrl) {
         router.push(callbackUrl);
       } else {
-        // We'll need to fetch the session to determine the role
-        // For now, redirect to a default page and let middleware handle it
-        router.push('/admin');
+        // Redirect based on user role
+        if (session?.user?.role === 'EMPLOYEE') {
+          router.push('/employee');
+        } else {
+          router.push('/admin');
+        }
         router.refresh();
       }
     } catch (err) {
