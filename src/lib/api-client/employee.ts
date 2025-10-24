@@ -36,7 +36,7 @@ export interface TimeEntry {
   areaId: string | null;
   clockIn: Date;
   clockOut: Date | null;
-  hoursWorked: number | null;
+  totalHours: number | null;
   jobSite: {
     id: string;
     name: string;
@@ -55,6 +55,11 @@ export interface ClockInDto {
   jobSiteId: string;
   floorId?: string;
   areaId?: string;
+  notes?: string;
+}
+
+export interface ClockOutDto {
+  notes?: string;
 }
 
 export interface TodayHours {
@@ -89,8 +94,17 @@ export async function clockIn(data: ClockInDto): Promise<TimeEntry> {
 /**
  * Clock out
  */
-export async function clockOut(): Promise<TimeEntry> {
-  return post<TimeEntry>('/api/time-entries/clock-out');
+export async function clockOut(data?: ClockOutDto): Promise<TimeEntry> {
+  return post<TimeEntry>('/api/time-entries/clock-out', data || {});
+}
+
+/**
+ * Get user's own assignments (convenience function)
+ */
+export async function getMyAssignments(): Promise<Assignment[]> {
+  // This will be called from a client component where we have session
+  // The API endpoint will use the session to get the current user's ID
+  return get<Assignment[]>('/api/users/me/assignments');
 }
 
 /**
