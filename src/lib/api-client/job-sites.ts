@@ -81,3 +81,17 @@ export async function updateJobSite(
 export async function deleteJobSite(id: string): Promise<{ success: boolean }> {
   return del<{ success: boolean }>(`/api/job-sites/${id}`);
 }
+
+/**
+ * Get job site hierarchy (with floors, areas, tasks)
+ */
+export async function getJobSiteHierarchy(id: string): Promise<any> {
+  return get<any>(`/api/job-sites/${id}/hierarchy`);
+}
+
+/**
+ * Get active painters at a job site
+ */
+export async function getActivePainters(id: string): Promise<any[]> {
+  return get<any[]>(`/api/job-sites/${id}/painters`);
+}
