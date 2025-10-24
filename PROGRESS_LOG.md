@@ -228,15 +228,59 @@ We're following a modified order from the original roadmap to prioritize getting
   - Real-time data from hierarchy API
   - Mobile-first responsive design
 
+#### ✅ Milestone 14: Employee Dashboard
+- **Status**: Complete
+- **Commits**:
+  - `feat: implement employee dashboard with time tracking and bug fixes (Milestone 14)`
+- **Features Implemented:**
+  - **EmployeeDashboard Component**:
+    - Three-section layout: TimeTracker, TodayStats, AssignmentsList
+    - Real-time data loading from multiple endpoints
+    - Mobile-first responsive design
+  - **TimeTracker Widget**:
+    - Clock in/out functionality
+    - Job site selection dropdown when clocking in
+    - Shows current location when clocked in (site/floor/area)
+    - Green pulsing indicator when active
+    - Empty state when no assignments
+  - **TodayStats Component**:
+    - Daily hours worked summary
+    - Completed sessions count
+    - Clock-in status indicator
+    - Three-card layout with color-coded stats
+  - **AssignmentsList Component**:
+    - Job sites grouped by assignment
+    - Clickable links to job site detail pages
+    - Visual hierarchy with counts
+  - **EmployeeJobSiteDetail Page**:
+    - Hierarchical view of site → floors → areas → tasks
+    - Progress bars at all levels
+    - Task completion percentages
+    - Mobile-optimized accordion-style layout
+  - **Employee API Client** (`src/lib/api-client/employee.ts`):
+    - `getMyAssignments()` - Fetch user's assignments
+    - `getCurrentTimeEntry()` - Get active clock-in
+    - `getTodayHours()` - Get daily summary
+    - `clockIn()` - Clock in to job site
+    - `clockOut()` - Clock out
+- **Bug Fixes**:
+  - Fixed clock-in validation: Changed from UUID to CUID validation to match database schema
+  - Fixed NextAuth v5 JWT module declaration (use `@auth/core/jwt`)
+  - Fixed null handling in assignment service for optional jobSiteId
+  - Added proper TypeScript types for job site hierarchy (`JobSiteWithHierarchy`)
+- **Technical Improvements**:
+  - Updated timeEntry validation schemas to use `.cuid()`
+  - Fixed ESLint warnings (useEffect dependencies, apostrophes)
+
 ---
 
 ## Current Status
 
-**Last Completed**: Milestone 11 (Admin Dashboard - Complete)
-**Next Up**: Milestone 14 (Employee Dashboard) → Following modified roadmap order
+**Last Completed**: Milestone 14 (Employee Dashboard - Complete) ✅
+**Next Up**: Milestone 15 (Dedicated Clock In/Out Page)
 **Current Branch**: `develop`
-**Latest Commit**: `a95a7d7 feat: implement job site detail page with hierarchical view (Milestone 11 - Part 2)`
-**Progress**: ~60% complete (11 of ~18 milestones)
+**Latest Commit**: `41a571e feat: implement employee dashboard with time tracking and bug fixes (Milestone 14)`
+**Progress**: ~70% complete (12 of ~18 milestones)
 
 ---
 
@@ -275,10 +319,11 @@ We're following a modified order from the original roadmap to prioritize getting
 
 ## Notes for Next Session
 
-- **Now working on**: Milestone 14 - Employee Dashboard
+- **Now working on**: Milestone 15 - Dedicated Clock In/Out Page
 - **Modified roadmap order**: Building employee experience (14-16) before remaining admin features (12-13)
-- Auth.ts has some type errors (pre-existing, not blocking)
-- Test suite needs updating for new routes
 - **All core backend APIs complete!** ✅ (Sites, Floors, Areas, Tasks, Assignments, Time Tracking, Activity Logs, Flags)
 - **Admin UI complete!** ✅ (Dashboard list + Detail page with full hierarchy)
-- Ready to build employee experience next
+- **Employee Dashboard complete!** ✅ (Dashboard with TimeTracker, TodayStats, AssignmentsList + Job Site Detail page)
+- **Recent bug fixes**: CUID validation, NextAuth v5 JWT types, null handling in assignments
+- Test suite needs updating for new routes
+- Next: Build dedicated clock in/out page, then progress update page
