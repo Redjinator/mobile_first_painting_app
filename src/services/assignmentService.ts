@@ -448,7 +448,7 @@ export class AssignmentService {
     const activeTimeEntry = await prisma.timeEntry.findFirst({
       where: {
         userId: assignment.userId,
-        jobSiteId: assignment.jobSiteId,
+        ...(assignment.jobSiteId && { jobSiteId: assignment.jobSiteId }),
         clockOut: null, // Still clocked in
       },
     });

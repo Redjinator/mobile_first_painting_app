@@ -82,11 +82,36 @@ export async function deleteJobSite(id: string): Promise<{ success: boolean }> {
   return del<{ success: boolean }>(`/api/job-sites/${id}`);
 }
 
+export interface JobSiteWithHierarchy {
+  id: string;
+  name: string;
+  address: string;
+  completionPercentage: number;
+  floors: {
+    id: string;
+    name: string;
+    floorNumber: number;
+    completionPercentage: number;
+    areas: {
+      id: string;
+      name: string;
+      areaType: string;
+      completionPercentage: number;
+      tasks: {
+        id: string;
+        description: string;
+        taskType: string;
+        completionPercentage: number;
+      }[];
+    }[];
+  }[];
+}
+
 /**
  * Get job site hierarchy (with floors, areas, tasks)
  */
-export async function getJobSiteHierarchy(id: string): Promise<any> {
-  return get<any>(`/api/job-sites/${id}/hierarchy`);
+export async function getJobSiteHierarchy(id: string): Promise<JobSiteWithHierarchy> {
+  return get<JobSiteWithHierarchy>(`/api/job-sites/${id}/hierarchy`);
 }
 
 /**

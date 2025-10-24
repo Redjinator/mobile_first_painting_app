@@ -24,7 +24,8 @@ declare module 'next-auth' {
   }
 }
 
-declare module 'next-auth/jwt' {
+// Extending the JWT type to include custom fields
+declare module '@auth/core/jwt' {
   interface JWT {
     id: string;
     email: string;
