@@ -131,9 +131,17 @@ export function EmployeeJobSiteDetail({ jobSiteId, userId }: EmployeeJobSiteDeta
                     <div key={area.id} className="border border-gray-200 rounded-lg p-3">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="text-sm font-medium text-gray-900">{area.name}</h3>
-                        <span className="text-xs font-semibold text-gray-700">
-                          {area.completionPercentage}%
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-semibold text-gray-700">
+                            {area.completionPercentage}%
+                          </span>
+                          <Link
+                            href={`/employee/progress/${area.id}`}
+                            className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+                          >
+                            Update
+                          </Link>
+                        </div>
                       </div>
 
                       {/* Tasks */}
