@@ -1,41 +1,61 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
-import { errorHandler, successResponse } from '@/lib/api/utils';
-import { NotFoundError } from '@/lib/api/errors';
+import { NextRequest } from 'next/server';
+import { TaskService } from '@/services/taskService';
+import { requireAuth } from '@/lib/api/auth';
+import { successResponse } from '@/lib/api/utils';
+import { handleApiError } from '@/lib/api/errors';
+import { validate } from '@/lib/api/validation';
+import { createCustomTaskSchema } from '@/lib/validations/task';
 
 /**
  * GET /api/areas/[id]/tasks
  * Get all tasks for an area
  */
 export async function GET(
-  req: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
-    const session = await auth();
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const user = await requireAuth();
+    const { id: areaId } = await params;
 
-    // Check if area exists
-    const area = await prisma.area.findUnique({
-      where: { id },
-    });
-
-    if (!area) {
-      throw new NotFoundError('Area not found');
-    }
-
-    // Get all tasks for the area
-    const tasks = await prisma.task.findMany({
-      where: { areaId: id },
-      orderBy: { taskOrder: 'asc' },
-    });
+    const tasks = await TaskService.getAllTasks(
+      areaId,
+      user.id,
+      user.role
+    );
 
     return successResponse(tasks);
   } catch (error) {
-    return errorHandler(error);
+    const { statusCode, body } = handleApiError(error);
+    return Response.json(body, { status: statusCode });
+  }
+}
+
+/**
+ * POST /api/areas/[id]/tasks
+ * Create a custom task for an area
+ */
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const user = await requireAuth();
+    const { id: areaId } = await params;
+    const body = await request.json();
+
+    const data = validate(createCustomTaskSchema, body);
+
+    const task = await TaskService.createCustomTask(
+      areaId,
+      data,
+      user.id,
+      user.role
+    );
+
+    return successResponse(task, 'Custom task created successfully', 201);
+  } catch (error) {
+    const { statusCode, body } = handleApiError(error);
+    return Response.json(body, { status: statusCode });
   }
 }
