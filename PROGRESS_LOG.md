@@ -148,14 +148,48 @@ This file tracks completed milestones and commits for easy conversation recovery
   - Updated Flag model to use proper enums and renamed fields (flagType → type, creator/resolver → createdByUser/resolvedByUser)
   - Recreated database migration with new schema
 
+#### ✅ Milestone 9: Tasks API
+- **Status**: Complete
+- **Commits**:
+  - `feat: implement tasks service and API with progress tracking (Milestone 9)`
+- **Tasks API Routes**:
+  - `GET/POST /api/areas/[id]/tasks` - List/create tasks for an area
+  - `GET/PATCH/DELETE /api/tasks/[id]` - Single task operations
+  - `PATCH /api/tasks/[id]/progress` - Update task progress (main endpoint for painters)
+- **Key Features**:
+  - **Automatic progress cascade**: Updating task progress triggers recalculation at all levels:
+    1. Task completion percentage updated
+    2. Area completion percentage recalculated (average of all tasks)
+    3. Floor completion percentage recalculated (average of all areas)
+    4. Site completion percentage recalculated (weighted average of all floors)
+  - **Activity logging**: Every progress update creates an activity log entry
+  - **Permission-based access**:
+    * Only assigned painters can update task progress
+    * Supervisors and admins can update any task
+    * Only admins can delete tasks
+    * Only admins/supervisors can create custom tasks or change task order
+  - **Assignment validation**: Painters must be assigned to site/floor/area to update tasks
+  - **Progress validation**: Percentage must be 0-100 in 5% increments
+- **TaskService Methods** (6 total):
+  - `getAllTasks` - Get all tasks for an area ordered by taskOrder
+  - `getTaskById` - Get single task with full details and activity history
+  - `updateTaskProgress` - Update completion % with cascade recalculation
+  - `updateTask` - Update task details (name, notes, taskOrder)
+  - `deleteTask` - Delete task (admin only)
+  - `createCustomTask` - Add custom tasks beyond default 4 (admin/supervisor only)
+- **Implementation Details**:
+  - Fixed error handling pattern to match existing routes (try/catch with handleApiError)
+  - Use jobSiteService singleton instance for site progress calculation
+  - Use static methods for AreaService and FloorService
+
 ---
 
 ## Current Status
 
-**Last Completed**: Milestone 8 (Activity Logs & Flags API)
-**Next Up**: Milestone 9 (Tasks API)
+**Last Completed**: Milestone 9 (Tasks API)
+**Next Up**: Milestone 10 (Admin UI - Dashboard & Site Management)
 **Current Branch**: `develop`
-**Latest Commit**: `06ada7b feat: implement activity logs and flags API (Milestone 8)`
+**Latest Commit**: `6927130 feat: implement tasks service and API with progress tracking (Milestone 9)`
 
 ---
 
@@ -194,9 +228,9 @@ This file tracks completed milestones and commits for easy conversation recovery
 
 ## Notes for Next Session
 
-- Continue with Milestone 9: Tasks API
+- Continue with Milestone 10: Admin UI - Dashboard & Site Management
 - Auth.ts has some type errors (pre-existing, not blocking)
 - Test suite needs updating for new routes
 - Consider adding API integration tests
-- All core backend APIs complete (Sites, Floors, Areas, Assignments, Time Tracking, Activity Logs, Flags)
-- Tasks are auto-created with Areas, but dedicated Tasks API endpoints still needed
+- **All core backend APIs now complete!** (Sites, Floors, Areas, Tasks, Assignments, Time Tracking, Activity Logs, Flags)
+- Ready to begin frontend UI implementation
