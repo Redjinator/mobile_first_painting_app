@@ -4,7 +4,33 @@ This file tracks completed milestones and commits for easy conversation recovery
 
 ---
 
-## Session 1 - Initial Setup & Core APIs (Milestones 1-6)
+## Development Order
+
+We're following a modified order from the original roadmap to prioritize getting a working admin + employee experience first:
+
+**Phase 1: Backend APIs (Complete)** ✅
+- Milestones 1-9: Setup, Database, Auth, All Backend APIs
+
+**Phase 2: Admin UI (Complete)** ✅
+- Milestone 11: Admin Dashboard & Job Site Detail
+
+**Phase 3: Employee UI (Current)** 🚧
+- Milestone 14: Employee Dashboard
+- Milestone 15: Clock In/Out Page
+- Milestone 16: Progress Update Page
+
+**Phase 4: Additional Admin Features (Deferred)**
+- Milestone 12: Time Tracking Dashboard
+- Milestone 13: Team Management
+- Job Site/Floor/Area Creation Forms
+
+**Phase 5: Polish & Deploy**
+- Milestone 17: Testing & Optimization
+- Milestones 18-19: Database & Vercel Deployment
+
+---
+
+## Session 1 - Initial Setup & Core APIs (Milestones 1-9)
 
 ### Completed Milestones
 
@@ -207,9 +233,10 @@ This file tracks completed milestones and commits for easy conversation recovery
 ## Current Status
 
 **Last Completed**: Milestone 11 (Admin Dashboard - Complete)
-**Next Up**: Milestone 12 (Time Tracking Dashboard) or Milestone 14 (Employee Dashboard)
+**Next Up**: Milestone 14 (Employee Dashboard) → Following modified roadmap order
 **Current Branch**: `develop`
 **Latest Commit**: `a95a7d7 feat: implement job site detail page with hierarchical view (Milestone 11 - Part 2)`
+**Progress**: ~60% complete (11 of ~18 milestones)
 
 ---
 
@@ -248,9 +275,10 @@ This file tracks completed milestones and commits for easy conversation recovery
 
 ## Notes for Next Session
 
-- Continue with Milestone 10: Admin UI - Dashboard & Site Management
+- **Now working on**: Milestone 14 - Employee Dashboard
+- **Modified roadmap order**: Building employee experience (14-16) before remaining admin features (12-13)
 - Auth.ts has some type errors (pre-existing, not blocking)
 - Test suite needs updating for new routes
-- Consider adding API integration tests
-- **All core backend APIs now complete!** (Sites, Floors, Areas, Tasks, Assignments, Time Tracking, Activity Logs, Flags)
-- Ready to begin frontend UI implementation
+- **All core backend APIs complete!** ✅ (Sites, Floors, Areas, Tasks, Assignments, Time Tracking, Activity Logs, Flags)
+- **Admin UI complete!** ✅ (Dashboard list + Detail page with full hierarchy)
+- Ready to build employee experience next
