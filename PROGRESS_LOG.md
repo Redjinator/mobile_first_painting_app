@@ -272,15 +272,75 @@ We're following a modified order from the original roadmap to prioritize getting
   - Updated timeEntry validation schemas to use `.cuid()`
   - Fixed ESLint warnings (useEffect dependencies, apostrophes)
 
+#### ✅ Milestone 15: Dedicated Clock In/Out Page
+- **Status**: Complete
+- **Commits**:
+  - `feat: create dedicated clock in/out page for employees (Milestone 15)`
+- **Features Implemented:**
+  - **Dedicated Clock Page** (`/employee/clock`):
+    - Full-page time clock interface for painters
+    - Live hour timer updating every second when clocked in
+    - Hierarchical location selection with cascading dropdowns (Site → Floor → Area)
+    - Recent activity section showing last 5 time entries with hours
+    - Auto-refresh data every 30 seconds
+  - **ClockPage Component**:
+    - Clock-in form with smart dropdown filtering
+    - Clocked-in status card with gradient green background
+    - Visual status indicator (pulsing green dot when clocked in)
+    - Optional notes field for both clock-in and clock-out
+    - Recent activity list with detailed time information
+  - **useTimer Hook**:
+    - Custom React hook for live elapsed time calculation
+    - Updates every second showing accumulated hours
+    - Properly handles cleanup on unmount
+  - **API Client Additions**:
+    - `time-entries` client for fetching user time entry history
+    - `getMyAssignments()` convenience function
+    - `ClockOutDto` with optional notes parameter
+    - Fixed `TimeEntry` interface to use `totalHours`
+  - **New API Endpoint**:
+    - `GET /api/users/me/assignments` - Get current user's own assignments
+
+#### ✅ Milestone 16: Progress Update Page
+- **Status**: Complete
+- **Commits**:
+  - `feat: create progress update page for employees (Milestone 16)`
+- **Features Implemented:**
+  - **Progress Update Page** (`/employee/progress/[areaId]`):
+    - Dedicated page for updating task completion percentages
+    - Real-time area progress calculation as sliders adjust
+    - Shows area context (job site, floor, area name)
+    - Batch save all task updates at once
+    - Navigate back to dashboard on success
+  - **ProgressSlider Component**:
+    - Interactive slider with 5% increment steps
+    - Color-coded progress bar (gray→yellow→blue→green based on percentage)
+    - Large draggable thumb with hover/active visual states
+    - Percentage markers at 0%, 25%, 50%, 75%, 100%
+    - Smooth animations and transitions
+    - Mobile-friendly touch support
+  - **Task Management**:
+    - Displays all tasks in area sorted by task order
+    - Tracks which tasks have been modified using Map
+    - Optional notes field appears only for updated tasks
+    - Shows count of tasks being updated in save button
+    - Optimistic UI updates before API calls
+  - **UI Features**:
+    - Fixed action buttons at bottom of screen
+    - Cancel button to discard all changes
+    - Real-time progress bar updates
+    - Color-coded percentage display
+    - Added "Update" links in EmployeeJobSiteDetail for each area
+
 ---
 
 ## Current Status
 
-**Last Completed**: Milestone 14 (Employee Dashboard - Complete) ✅
-**Next Up**: Milestone 15 (Dedicated Clock In/Out Page)
+**Last Completed**: Milestone 16 (Progress Update Page - Complete) ✅
+**Next Up**: Milestone 17 (Testing & Optimization) or Continue with Phase 4 (Admin Features)
 **Current Branch**: `develop`
-**Latest Commit**: `41a571e feat: implement employee dashboard with time tracking and bug fixes (Milestone 14)`
-**Progress**: ~70% complete (12 of ~18 milestones)
+**Latest Commit**: `33941f1 feat: create progress update page for employees (Milestone 16)`
+**Progress**: ~80% complete (14 of ~18 milestones)
 
 ---
 
@@ -319,11 +379,15 @@ We're following a modified order from the original roadmap to prioritize getting
 
 ## Notes for Next Session
 
-- **Now working on**: Milestone 15 - Dedicated Clock In/Out Page
-- **Modified roadmap order**: Building employee experience (14-16) before remaining admin features (12-13)
+- **Employee UI Complete!** ✅ All three employee pages done (Dashboard, Clock In/Out, Progress Update)
+- **Core employee workflow functional**: Clock in → View assignments → Update task progress → Clock out
 - **All core backend APIs complete!** ✅ (Sites, Floors, Areas, Tasks, Assignments, Time Tracking, Activity Logs, Flags)
 - **Admin UI complete!** ✅ (Dashboard list + Detail page with full hierarchy)
-- **Employee Dashboard complete!** ✅ (Dashboard with TimeTracker, TodayStats, AssignmentsList + Job Site Detail page)
 - **Recent bug fixes**: CUID validation, NextAuth v5 JWT types, null handling in assignments
+- **Modified roadmap order**: Building employee experience (14-16) before remaining admin features (12-13)
+- **Next steps options**:
+  1. Continue with remaining admin features (Milestone 12: Time Tracking Dashboard, Milestone 13: Team Management)
+  2. Add job site/floor/area creation forms for admins
+  3. Move to Milestone 17: Testing & Optimization
+  4. Deploy to Vercel (Milestones 18-19)
 - Test suite needs updating for new routes
-- Next: Build dedicated clock in/out page, then progress update page
