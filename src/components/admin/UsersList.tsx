@@ -57,12 +57,18 @@ export function UsersList({ refreshKey }: UsersListProps) {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update user status');
+        const data = await response.json();
+        if (response.status === 404) {
+          throw new Error('User not found. They may have been deleted. Refreshing the list...');
+        }
+        throw new Error(data.error?.message || 'Failed to update user status');
       }
 
       await loadUsers();
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed to update user status');
+      // Refresh the list in case the user was deleted
+      await loadUsers();
     }
   }
 
