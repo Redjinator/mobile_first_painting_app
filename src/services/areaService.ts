@@ -270,7 +270,6 @@ export class AreaService {
               create: DEFAULT_TASKS.map((task) => ({
                 ...task,
                 completionPercentage: 0,
-                isCompleted: false,
               })),
             },
           },
