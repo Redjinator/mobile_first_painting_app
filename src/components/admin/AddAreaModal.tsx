@@ -23,10 +23,11 @@ export function AddAreaModal({ floorId, onClose, onSuccess }: AddAreaModalProps)
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/floors/${floorId}/areas`, {
+      const response = await fetch('/api/areas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          floorId: floorId,
           areas: [
             {
               name: formData.name,
