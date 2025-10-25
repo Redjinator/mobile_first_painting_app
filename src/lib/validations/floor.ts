@@ -14,6 +14,6 @@ export const updateFloorSchema = z.object({
 });
 
 export const bulkCreateFloorsSchema = z.object({
-  jobSiteId: z.string().uuid('Invalid job site ID'),
+  jobSiteId: z.string().cuid('Invalid job site ID'),
   count: z.number().int().min(1, 'Count must be at least 1').max(50, 'Cannot create more than 50 floors at once'),
 });
