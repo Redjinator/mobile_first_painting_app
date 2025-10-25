@@ -38,6 +38,43 @@ export default async function AdminPage() {
           </p>
         </div>
 
+        {/* Quick Links */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <Link
+            href="/admin/time-tracking"
+            className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow border border-gray-200 hover:border-blue-300"
+          >
+            <div className="flex items-center gap-4">
+              <div className="bg-green-100 rounded-lg p-3">
+                <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">Time Tracking</h3>
+                <p className="text-sm text-gray-600">View active workers and time entries</p>
+              </div>
+            </div>
+          </Link>
+
+          <Link
+            href="/admin/team"
+            className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow border border-gray-200 hover:border-blue-300"
+          >
+            <div className="flex items-center gap-4">
+              <div className="bg-purple-100 rounded-lg p-3">
+                <svg className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">Team Management</h3>
+                <p className="text-sm text-gray-600">Manage users and assignments</p>
+              </div>
+            </div>
+          </Link>
+        </div>
+
         {/* Action Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
           <div>
