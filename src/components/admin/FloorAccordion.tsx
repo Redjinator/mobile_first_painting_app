@@ -2,13 +2,16 @@
 
 import { useState } from 'react';
 import { AreaAccordion } from './AreaAccordion';
+import { AddAreaModal } from './AddAreaModal';
 
 interface FloorAccordionProps {
   floor: any;
+  onRefresh: () => void;
 }
 
-export function FloorAccordion({ floor }: FloorAccordionProps) {
+export function FloorAccordion({ floor, onRefresh }: FloorAccordionProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showAddArea, setShowAddArea] = useState(false);
 
   const progressColor =
     floor.completionPercentage >= 75
@@ -83,7 +86,29 @@ export function FloorAccordion({ floor }: FloorAccordionProps) {
               No areas in this floor yet.
             </div>
           )}
+
+          {/* Add Area Button */}
+          <div className="p-4 border-t border-gray-100">
+            <button
+              onClick={() => setShowAddArea(true)}
+              className="w-full px-4 py-2 text-sm font-medium text-blue-600 border border-blue-300 rounded-lg hover:bg-blue-50 transition"
+            >
+              + Add Area
+            </button>
+          </div>
         </div>
+      )}
+
+      {/* Add Area Modal */}
+      {showAddArea && (
+        <AddAreaModal
+          floorId={floor.id}
+          onClose={() => setShowAddArea(false)}
+          onSuccess={() => {
+            setShowAddArea(false);
+            onRefresh();
+          }}
+        />
       )}
     </div>
   );

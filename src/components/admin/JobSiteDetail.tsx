@@ -7,6 +7,7 @@ import {
   type JobSiteWithProgress,
 } from '@/lib/api-client/job-sites';
 import { FloorAccordion } from './FloorAccordion';
+import { AddFloorModal } from './AddFloorModal';
 
 interface JobSiteDetailProps {
   siteId: string;
@@ -17,6 +18,7 @@ export function JobSiteDetail({ siteId }: JobSiteDetailProps) {
   const [hierarchy, setHierarchy] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showAddFloor, setShowAddFloor] = useState(false);
 
   useEffect(() => {
     loadSiteData();
@@ -199,13 +201,19 @@ export function JobSiteDetail({ siteId }: JobSiteDetailProps) {
 
       {/* Floors List */}
       <div className="bg-white rounded-lg shadow-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Floors & Progress
-        </h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">Floors & Progress</h3>
+          <button
+            onClick={() => setShowAddFloor(true)}
+            className="px-3 py-1 text-sm font-medium text-blue-600 border border-blue-300 rounded-lg hover:bg-blue-50 transition"
+          >
+            + Add Floor
+          </button>
+        </div>
         {hierarchy?.floors && hierarchy.floors.length > 0 ? (
           <div className="space-y-3">
             {hierarchy.floors.map((floor: any) => (
-              <FloorAccordion key={floor.id} floor={floor} />
+              <FloorAccordion key={floor.id} floor={floor} onRefresh={loadSiteData} />
             ))}
           </div>
         ) : (
@@ -214,6 +222,18 @@ export function JobSiteDetail({ siteId }: JobSiteDetailProps) {
           </div>
         )}
       </div>
+
+      {/* Add Floor Modal */}
+      {showAddFloor && (
+        <AddFloorModal
+          jobSiteId={siteId}
+          onClose={() => setShowAddFloor(false)}
+          onSuccess={() => {
+            setShowAddFloor(false);
+            loadSiteData();
+          }}
+        />
+      )}
     </div>
   );
 }
