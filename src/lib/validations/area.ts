@@ -14,7 +14,7 @@ export const updateAreaSchema = z.object({
 });
 
 export const bulkCreateAreasSchema = z.object({
-  floorId: z.string().uuid('Invalid floor ID'),
+  floorId: z.string().cuid('Invalid floor ID'),
   areas: z
     .array(
       z.object({
