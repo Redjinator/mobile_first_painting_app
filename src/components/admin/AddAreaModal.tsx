@@ -39,12 +39,13 @@ export function AddAreaModal({ floorId, onClose, onSuccess }: AddAreaModalProps)
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error?.message || 'Failed to create area');
+        throw new Error(data.error?.message || data.error || 'Failed to create area');
       }
 
       onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create area');
+      console.error('Area creation error:', err);
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred. Please check the console for details.');
       setLoading(false);
     }
   }
