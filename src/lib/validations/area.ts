@@ -21,6 +21,15 @@ export const bulkCreateAreasSchema = z.object({
         name: z.string().min(1).max(100),
         areaType: z.nativeEnum(AreaType),
         notes: z.string().max(500).optional(),
+        tasks: z
+          .array(
+            z.object({
+              name: z.string().min(1).max(100),
+              taskOrder: z.number().int().min(1),
+            })
+          )
+          .min(1, 'At least one task is required')
+          .optional(),
       })
     )
     .min(1, 'At least one area is required')

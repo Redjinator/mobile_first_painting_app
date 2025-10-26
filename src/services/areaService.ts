@@ -246,7 +246,7 @@ export class AreaService {
    */
   static async createAreasBulk(
     floorId: string,
-    areaConfigs: CreateAreaDto[],
+    areaConfigs: (CreateAreaDto & { tasks?: Array<{ name: string; taskOrder: number }> })[],
     createdBy: string
   ) {
     // Check if floor exists
@@ -260,14 +260,21 @@ export class AreaService {
 
     // Create areas with tasks in a transaction
     const areas = await prisma.$transaction(
-      areaConfigs.map((config) =>
-        prisma.area.create({
+      areaConfigs.map((config) => {
+        // Use provided tasks or fall back to defaults
+        const tasksToCreate = config.tasks && config.tasks.length > 0
+          ? config.tasks
+          : DEFAULT_TASKS;
+
+        const { tasks, ...areaData } = config;
+
+        return prisma.area.create({
           data: {
-            ...config,
+            ...areaData,
             floorId,
             completionPercentage: 0,
             tasks: {
-              create: DEFAULT_TASKS.map((task) => ({
+              create: tasksToCreate.map((task) => ({
                 ...task,
                 completionPercentage: 0,
               })),
@@ -278,8 +285,8 @@ export class AreaService {
               orderBy: { taskOrder: 'asc' },
             },
           },
-        })
-      )
+        });
+      })
     );
 
     return areas;
