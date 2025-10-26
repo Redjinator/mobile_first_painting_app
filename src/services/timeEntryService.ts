@@ -532,6 +532,78 @@ export class TimeEntryService {
   }
 
   /**
+   * Get time entries with flexible filtering
+   * Supports filtering by userId, siteId, and date range
+   */
+  static async getTimeEntries(filters: {
+    userId?: string;
+    siteId?: string;
+    startDate?: Date;
+    endDate?: Date;
+  }): Promise<TimeEntryWithDetails[]> {
+    const { userId, siteId, startDate, endDate } = filters;
+
+    // Build where clause dynamically
+    const where: any = {};
+
+    if (userId) {
+      where.userId = userId;
+    }
+
+    if (siteId) {
+      where.jobSiteId = siteId;
+    }
+
+    if (startDate || endDate) {
+      where.clockIn = {};
+      if (startDate) {
+        where.clockIn.gte = startDate;
+      }
+      if (endDate) {
+        where.clockIn.lte = endDate;
+      }
+    }
+
+    const timeEntries = await prisma.timeEntry.findMany({
+      where,
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+        jobSite: {
+          select: {
+            id: true,
+            name: true,
+            address: true,
+          },
+        },
+        floor: {
+          select: {
+            id: true,
+            name: true,
+            floorNumber: true,
+          },
+        },
+        area: {
+          select: {
+            id: true,
+            name: true,
+            areaType: true,
+          },
+        },
+      },
+      orderBy: { clockIn: 'desc' },
+    });
+
+    return timeEntries;
+  }
+
+  /**
    * Helper: Get start of current week (Monday)
    */
   private static getStartOfWeek(): Date {

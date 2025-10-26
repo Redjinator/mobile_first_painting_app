@@ -5,7 +5,7 @@ import { errorHandler, successResponse } from '@/lib/api/utils';
 
 /**
  * GET /api/time-entries
- * Get time entries with optional filters
+ * Get time entries with optional filters (userId, siteId, startDate, endDate)
  */
 export async function GET(req: NextRequest) {
   try {
@@ -15,7 +15,8 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url);
-    const userId = searchParams.get('userId') || session.user.id;
+    const userId = searchParams.get('userId');
+    const siteId = searchParams.get('siteId');
     const startDate = searchParams.get('startDate')
       ? new Date(searchParams.get('startDate')!)
       : undefined;
@@ -24,15 +25,19 @@ export async function GET(req: NextRequest) {
       : undefined;
 
     // Employees can only see their own entries
-    if (session.user.role === 'EMPLOYEE' && userId !== session.user.id) {
+    if (session.user.role === 'EMPLOYEE' && userId && userId !== session.user.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const timeEntries = await TimeEntryService.getTimeEntriesForUser(
-      userId,
+    // If employee and no userId specified, default to their own
+    const effectiveUserId = session.user.role === 'EMPLOYEE' ? session.user.id : (userId || undefined);
+
+    const timeEntries = await TimeEntryService.getTimeEntries({
+      userId: effectiveUserId,
+      siteId: siteId || undefined,
       startDate,
-      endDate
-    );
+      endDate,
+    });
 
     return successResponse(timeEntries);
   } catch (error) {
