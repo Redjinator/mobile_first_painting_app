@@ -311,7 +311,7 @@ export class JobSiteService {
     data: CreateJobSiteDto,
     createdBy: string
   ) {
-    // Validate supervisor exists and has SUPERVISOR role
+    // Validate supervisor exists and has SUPERVISOR or ADMIN role
     const supervisor = await prisma.user.findUnique({
       where: { id: data.supervisorId },
     });
@@ -320,8 +320,8 @@ export class JobSiteService {
       throw new NotFoundError('Supervisor not found');
     }
 
-    if (supervisor.role !== UserRole.SUPERVISOR) {
-      throw new BadRequestError('Assigned user must have SUPERVISOR role');
+    if (supervisor.role !== UserRole.SUPERVISOR && supervisor.role !== UserRole.ADMIN) {
+      throw new BadRequestError('Assigned user must have SUPERVISOR or ADMIN role');
     }
 
     // Create job site
@@ -409,8 +409,8 @@ export class JobSiteService {
         throw new NotFoundError('New supervisor not found');
       }
 
-      if (newSupervisor.role !== UserRole.SUPERVISOR) {
-        throw new BadRequestError('Assigned user must have SUPERVISOR role');
+      if (newSupervisor.role !== UserRole.SUPERVISOR && newSupervisor.role !== UserRole.ADMIN) {
+        throw new BadRequestError('Assigned user must have SUPERVISOR or ADMIN role');
       }
     }
 
