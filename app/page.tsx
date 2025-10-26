@@ -26,13 +26,13 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-12 space-y-4">
-          <Link href="/login" className="block w-full md:inline-block md:w-auto bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-            Admin Login
+        <div className="mt-12">
+          <Link href="/login" className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-md">
+            Sign In
           </Link>
-          <Link href="/login" className="block w-full md:inline-block md:w-auto bg-gray-200 text-gray-800 px-8 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors md:ml-4">
-            Employee Login
-          </Link>
+          <p className="mt-4 text-sm text-gray-600">
+            Access is automatically granted based on your credentials
+          </p>
         </div>
 
         <p className="mt-8 text-sm text-gray-500">

@@ -19,9 +19,9 @@ describe('Home Page', () => {
     expect(screen.getByText('Avg Progress')).toBeInTheDocument()
   })
 
-  it('displays login buttons', () => {
+  it('displays sign in button', () => {
     render(<Home />)
-    expect(screen.getByText('Admin Login')).toBeInTheDocument()
-    expect(screen.getByText('Employee Login')).toBeInTheDocument()
+    expect(screen.getByText('Sign In')).toBeInTheDocument()
+    expect(screen.getByText('Access is automatically granted based on your credentials')).toBeInTheDocument()
   })
 })

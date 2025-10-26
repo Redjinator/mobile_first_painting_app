@@ -119,7 +119,7 @@ export class JobSiteService {
     id: string,
     userId?: string,
     userRole?: UserRole
-  ) {
+  ): Promise<JobSiteWithProgress> {
     const jobSite = await prisma.jobSite.findUnique({
       where: { id },
       include: {
@@ -132,17 +132,14 @@ export class JobSiteService {
           },
         },
         floors: {
-          include: {
-            areas: {
-              include: {
-                tasks: {
-                  orderBy: { taskOrder: 'asc' },
-                },
-              },
-              orderBy: { name: 'asc' },
-            },
+          select: { id: true },
+        },
+        assignments: {
+          where: {
+            assignableType: 'JOB_SITE',
           },
-          orderBy: { floorNumber: 'asc' },
+          select: { userId: true },
+          distinct: ['userId'],
         },
       },
     });
@@ -160,7 +157,22 @@ export class JobSiteService {
       throw new ForbiddenError('You do not have access to this job site');
     }
 
-    return jobSite;
+    // Transform to JobSiteWithProgress
+    return {
+      id: jobSite.id,
+      name: jobSite.name,
+      address: jobSite.address,
+      notes: jobSite.notes,
+      supervisorId: jobSite.supervisorId,
+      startDate: jobSite.startDate,
+      completionPercentage: jobSite.completionPercentage,
+      isActive: jobSite.isActive,
+      createdAt: jobSite.createdAt,
+      updatedAt: jobSite.updatedAt,
+      supervisor: jobSite.supervisor,
+      floorCount: jobSite.floors.length,
+      activeWorkerCount: jobSite.assignments.length,
+    };
   }
 
   /**
