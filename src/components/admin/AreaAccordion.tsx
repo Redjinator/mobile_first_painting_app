@@ -5,10 +5,12 @@ import { TaskList } from './TaskList';
 
 interface AreaAccordionProps {
   area: any;
+  onDelete?: (areaId: string) => void;
 }
 
-export function AreaAccordion({ area }: AreaAccordionProps) {
+export function AreaAccordion({ area, onDelete }: AreaAccordionProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const progressColor =
     area.completionPercentage >= 75
@@ -18,6 +20,33 @@ export function AreaAccordion({ area }: AreaAccordionProps) {
       : area.completionPercentage >= 25
       ? 'bg-yellow-500'
       : 'bg-gray-400';
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!confirm(`Are you sure you want to delete "${area.name}"? This will also delete all tasks in this area.`)) {
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      const response = await fetch(`/api/areas/${area.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error?.message || 'Failed to delete area');
+      }
+
+      onDelete?.(area.id);
+    } catch (err) {
+      console.error('Failed to delete area:', err);
+      alert(err instanceof Error ? err.message : 'Failed to delete area');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div className="border-l-4 border-l-blue-200">
@@ -70,6 +99,29 @@ export function AreaAccordion({ area }: AreaAccordionProps) {
             <span className="text-xs font-semibold text-gray-700 w-10 text-right">
               {area.completionPercentage}%
             </span>
+
+            {/* Delete Button */}
+            {onDelete && (
+              <button
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="ml-2 p-1 text-red-600 hover:bg-red-50 rounded transition disabled:opacity-50"
+                title="Delete area"
+              >
+                {isDeleting ? (
+                  <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                )}
+              </button>
+            )}
           </div>
         </div>
       </button>

@@ -1,13 +1,18 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { JobSiteWithProgress } from '@/lib/api-client/job-sites';
 
 interface JobSiteCardProps {
   site: JobSiteWithProgress;
+  onDelete?: (siteId: string) => void;
 }
 
-export function JobSiteCard({ site }: JobSiteCardProps) {
+export function JobSiteCard({ site, onDelete }: JobSiteCardProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
   const progressColor =
     site.completionPercentage >= 75
       ? 'bg-green-500'
@@ -21,9 +26,41 @@ export function JobSiteCard({ site }: JobSiteCardProps) {
     ? 'bg-green-100 text-green-800'
     : 'bg-gray-100 text-gray-800';
 
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!confirm(`Are you sure you want to delete "${site.name}"? This will delete all floors, areas, tasks, and assignments associated with this job site. This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      const response = await fetch(`/api/job-sites/${site.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error?.message || 'Failed to delete job site');
+      }
+
+      if (onDelete) {
+        onDelete(site.id);
+      } else {
+        router.refresh();
+      }
+    } catch (err) {
+      console.error('Failed to delete job site:', err);
+      alert(err instanceof Error ? err.message : 'Failed to delete job site');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
-    <Link href={`/admin/job-sites/${site.id}`}>
-      <div className="bg-white rounded-lg shadow hover:shadow-md transition-shadow border border-gray-200 p-4 sm:p-6">
+    <div className="bg-white rounded-lg shadow hover:shadow-md transition-shadow border border-gray-200 p-4 sm:p-6 relative">
+      <Link href={`/admin/job-sites/${site.id}`} className="block">
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1 min-w-0">
@@ -89,7 +126,30 @@ export function JobSiteCard({ site }: JobSiteCardProps) {
         <div className="mt-3 text-xs text-gray-500">
           Started {new Date(site.startDate).toLocaleDateString()}
         </div>
-      </div>
-    </Link>
+      </Link>
+
+      {/* Delete Button (Absolute positioned) */}
+      {onDelete && (
+        <button
+          onClick={handleDelete}
+          disabled={isDeleting}
+          className="absolute top-2 right-2 p-2 text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50 z-10"
+          title="Delete job site"
+        >
+          {isDeleting ? (
+            <div className="w-5 h-5 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+          )}
+        </button>
+      )}
+    </div>
   );
 }

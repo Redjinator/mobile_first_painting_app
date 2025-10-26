@@ -26,6 +26,10 @@ export function JobSiteList() {
     }
   }
 
+  function handleDelete(siteId: string) {
+    setSites(sites.filter(s => s.id !== siteId));
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -96,7 +100,7 @@ export function JobSiteList() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {sites.map((site) => (
-        <JobSiteCard key={site.id} site={site} />
+        <JobSiteCard key={site.id} site={site} onDelete={handleDelete} />
       ))}
     </div>
   );

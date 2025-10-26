@@ -213,7 +213,12 @@ export function JobSiteDetail({ siteId }: JobSiteDetailProps) {
         {hierarchy?.floors && hierarchy.floors.length > 0 ? (
           <div className="space-y-3">
             {hierarchy.floors.map((floor: any) => (
-              <FloorAccordion key={floor.id} floor={floor} onRefresh={loadSiteData} />
+              <FloorAccordion
+                key={floor.id}
+                floor={floor}
+                onRefresh={loadSiteData}
+                onDelete={() => loadSiteData()}
+              />
             ))}
           </div>
         ) : (

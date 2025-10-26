@@ -44,3 +44,46 @@ export async function PATCH(
     return Response.json(body, { status: statusCode });
   }
 }
+
+/**
+ * DELETE /api/users/[userId]
+ * Delete user (admin only)
+ */
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ userId: string }> }
+) {
+  try {
+    const session = await auth();
+    if (!session?.user || session.user.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { userId } = await params;
+
+    // Check if user has active time entries
+    const activeTimeEntry = await prisma.timeEntry.findFirst({
+      where: {
+        userId,
+        clockOut: null,
+      },
+    });
+
+    if (activeTimeEntry) {
+      return NextResponse.json(
+        { error: 'Cannot delete user with active time entries. Please clock them out first.' },
+        { status: 400 }
+      );
+    }
+
+    // Delete user (cascade will handle related records based on schema)
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    return successResponse({ success: true }, 'User deleted successfully');
+  } catch (error) {
+    const { statusCode, body } = handleApiError(error);
+    return Response.json(body, { status: statusCode });
+  }
+}

@@ -72,6 +72,27 @@ export function UsersList({ refreshKey }: UsersListProps) {
     }
   }
 
+  async function deleteUser(userId: string, userName: string) {
+    if (!confirm(`Are you sure you want to permanently delete ${userName}? This will also delete all their time entries, assignments, and other related data. This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/users/${userId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to delete user');
+      }
+
+      await loadUsers();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to delete user');
+    }
+  }
+
   const filteredUsers = filter === 'all' ? users : users.filter((u) => u.role === filter);
 
   const getRoleBadgeColor = (role: string) => {
@@ -177,6 +198,12 @@ export function UsersList({ refreshKey }: UsersListProps) {
                     }`}
                   >
                     {user.isActive ? 'Deactivate' : 'Activate'}
+                  </button>
+                  <button
+                    onClick={() => deleteUser(user.id, `${user.firstName} ${user.lastName}`)}
+                    className="px-3 py-1 text-xs font-medium rounded-md bg-red-50 text-red-700 hover:bg-red-100 transition"
+                  >
+                    Delete
                   </button>
                 </div>
               </div>
