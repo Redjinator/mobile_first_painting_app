@@ -4,6 +4,7 @@ import { successResponse } from '@/lib/api/utils';
 import { handleApiError } from '@/lib/api/errors';
 import { UserRole } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
+import { jobSiteService } from '@/services/jobSiteService';
 
 /**
  * POST /api/admin/clock-out/[timeEntryId]
@@ -81,6 +82,9 @@ export async function POST(
         totalHours: Math.round(totalHours * 100) / 100,
       },
     });
+
+    // Update job site active status (check if any other painters are still clocked in)
+    await jobSiteService.updateActiveStatus(timeEntry.jobSite.id);
 
     return successResponse(
       updatedEntry,

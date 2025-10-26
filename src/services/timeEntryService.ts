@@ -8,6 +8,7 @@ import {
   ActiveWorker,
   TodayHoursResponse,
 } from '@/types/timeEntry';
+import { jobSiteService } from './jobSiteService';
 
 export class TimeEntryService {
   /**
@@ -148,6 +149,9 @@ export class TimeEntryService {
       },
     });
 
+    // Update job site active status (set to active since someone just clocked in)
+    await jobSiteService.updateActiveStatus(data.jobSiteId);
+
     return timeEntry;
   }
 
@@ -211,6 +215,9 @@ export class TimeEntryService {
         },
       },
     });
+
+    // Update job site active status (check if any other painters are still clocked in)
+    await jobSiteService.updateActiveStatus(timeEntry.jobSiteId);
 
     return updated;
   }

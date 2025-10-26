@@ -634,6 +634,30 @@ export class JobSiteService {
 
     return painters;
   }
+
+  /**
+   * Update the active status of a job site based on whether painters are clocked in
+   * A job site is active if at least one painter is currently clocked in
+   */
+  async updateActiveStatus(siteId: string): Promise<boolean> {
+    // Count active time entries (painters currently clocked in)
+    const activeWorkerCount = await prisma.timeEntry.count({
+      where: {
+        jobSiteId: siteId,
+        clockOut: null,
+      },
+    });
+
+    const isActive = activeWorkerCount > 0;
+
+    // Update the job site's active status
+    await prisma.jobSite.update({
+      where: { id: siteId },
+      data: { isActive },
+    });
+
+    return isActive;
+  }
 }
 
 // Export singleton instance
