@@ -446,7 +446,8 @@ export class JobSiteService {
   }
 
   /**
-   * Soft delete a job site (only ADMIN)
+   * Delete a job site (only ADMIN)
+   * This will cascade delete all floors, areas, tasks, assignments, time entries, and flags
    */
   async deleteJobSite(
     id: string,
@@ -461,29 +462,70 @@ export class JobSiteService {
     // Check if site exists
     const existingSite = await prisma.jobSite.findUnique({
       where: { id },
+      include: {
+        floors: {
+          include: {
+            areas: {
+              include: {
+                tasks: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!existingSite) {
       throw new NotFoundError('Job site not found');
     }
 
-    // Soft delete the site
-    await prisma.jobSite.update({
+    // Delete in the correct order to handle cascading properly
+    // Prisma will handle some cascades automatically based on schema, but we'll be explicit
+
+    // 1. Delete all tasks
+    for (const floor of existingSite.floors) {
+      for (const area of floor.areas) {
+        await prisma.task.deleteMany({
+          where: { areaId: area.id },
+        });
+      }
+    }
+
+    // 2. Delete all areas
+    for (const floor of existingSite.floors) {
+      await prisma.area.deleteMany({
+        where: { floorId: floor.id },
+      });
+    }
+
+    // 3. Delete all floors
+    await prisma.floor.deleteMany({
+      where: { jobSiteId: id },
+    });
+
+    // 4. Delete all assignments for this job site
+    await prisma.assignment.deleteMany({
+      where: { jobSiteId: id },
+    });
+
+    // 5. Delete all time entries for this job site
+    await prisma.timeEntry.deleteMany({
+      where: { jobSiteId: id },
+    });
+
+    // 6. Delete all flags for this job site
+    await prisma.flag.deleteMany({
+      where: { jobSiteId: id },
+    });
+
+    // 7. Finally, delete the job site itself
+    await prisma.jobSite.delete({
       where: { id },
-      data: { isActive: false },
     });
 
-    // Log activity
-    await prisma.activityLog.create({
-      data: {
-        userId,
-        action: 'DELETE',
-        entityType: 'JOB_SITE',
-        entityId: id,
-      },
-    });
+    // Note: Activity logs are kept for audit trail, we don't delete them
 
-    return { message: 'Job site deleted successfully' };
+    return { message: 'Job site and all related data deleted successfully' };
   }
 
   /**
