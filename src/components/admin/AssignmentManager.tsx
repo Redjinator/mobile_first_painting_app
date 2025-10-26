@@ -18,6 +18,7 @@ interface JobSite {
 }
 
 interface Painter {
+  assignmentId: string;
   id: string;
   firstName: string;
   lastName: string;
@@ -163,6 +164,33 @@ export function AssignmentManager() {
     } catch (err) {
       console.error('Assignment creation error:', err);
       setError(err instanceof Error ? err.message : 'Failed to create assignment');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleRemoveAssignment(assignmentId: string, painterName: string) {
+    if (!confirm(`Remove ${painterName} from this assignment?`)) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await fetch(`/api/assignments/${assignmentId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error?.message || data.error || 'Failed to remove assignment');
+      }
+
+      await loadAssignments();
+    } catch (err) {
+      console.error('Assignment removal error:', err);
+      setError(err instanceof Error ? err.message : 'Failed to remove assignment');
     } finally {
       setLoading(false);
     }
@@ -368,6 +396,31 @@ export function AssignmentManager() {
                             {painter.firstName} {painter.lastName}
                           </span>
                         </div>
+                        <button
+                          onClick={() =>
+                            handleRemoveAssignment(
+                              painter.assignmentId,
+                              `${painter.firstName} ${painter.lastName}`
+                            )
+                          }
+                          disabled={loading}
+                          className="text-red-600 hover:text-red-700 disabled:opacity-50"
+                          title="Remove assignment"
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -400,6 +453,31 @@ export function AssignmentManager() {
                                   <span className="font-medium">FLOOR</span>
                                   <span>•</span>
                                   <span>{painter.firstName} {painter.lastName}</span>
+                                  <button
+                                    onClick={() =>
+                                      handleRemoveAssignment(
+                                        painter.assignmentId,
+                                        `${painter.firstName} ${painter.lastName}`
+                                      )
+                                    }
+                                    disabled={loading}
+                                    className="ml-1 text-green-700 hover:text-green-900 disabled:opacity-50"
+                                    title="Remove assignment"
+                                  >
+                                    <svg
+                                      className="w-3 h-3"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      stroke="currentColor"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                      />
+                                    </svg>
+                                  </button>
                                 </div>
                               ))}
                             </div>
@@ -429,12 +507,37 @@ export function AssignmentManager() {
                                   {area.painters.length > 0 && (
                                     <div className="mt-2 flex flex-wrap gap-1">
                                       {area.painters.map((painter) => (
-                                        <span
+                                        <div
                                           key={painter.id}
-                                          className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-xs"
+                                          className="flex items-center gap-1 bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-xs"
                                         >
-                                          {painter.firstName} {painter.lastName}
-                                        </span>
+                                          <span>{painter.firstName} {painter.lastName}</span>
+                                          <button
+                                            onClick={() =>
+                                              handleRemoveAssignment(
+                                                painter.assignmentId,
+                                                `${painter.firstName} ${painter.lastName}`
+                                              )
+                                            }
+                                            disabled={loading}
+                                            className="ml-0.5 text-purple-700 hover:text-purple-900 disabled:opacity-50"
+                                            title="Remove assignment"
+                                          >
+                                            <svg
+                                              className="w-3 h-3"
+                                              fill="none"
+                                              viewBox="0 0 24 24"
+                                              stroke="currentColor"
+                                            >
+                                              <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M6 18L18 6M6 6l12 12"
+                                              />
+                                            </svg>
+                                          </button>
+                                        </div>
                                       ))}
                                     </div>
                                   )}

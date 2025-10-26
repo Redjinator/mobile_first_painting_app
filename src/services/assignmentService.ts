@@ -147,17 +147,26 @@ export class AssignmentService {
         name: site.name,
         address: site.address,
       },
-      sitePainters: siteAssignments.map((a) => a.user),
+      sitePainters: siteAssignments.map((a) => ({
+        assignmentId: a.id,
+        ...a.user,
+      })),
       floors: floors.map((floor) => ({
         id: floor.id,
         name: floor.name,
         floorNumber: floor.floorNumber,
-        painters: floor.assignments.map((a) => a.user),
+        painters: floor.assignments.map((a) => ({
+          assignmentId: a.id,
+          ...a.user,
+        })),
         areas: floor.areas.map((area) => ({
           id: area.id,
           name: area.name,
           areaType: area.areaType,
-          painters: area.assignments.map((a) => a.user),
+          painters: area.assignments.map((a) => ({
+            assignmentId: a.id,
+            ...a.user,
+          })),
         })),
       })),
     };
