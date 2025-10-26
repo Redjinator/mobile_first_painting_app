@@ -5,6 +5,7 @@ import { getActiveWorkers } from '@/lib/api-client/time-entries';
 import { getAllJobSites } from '@/lib/api-client/job-sites';
 
 interface ActiveWorker {
+  timeEntryId: string;
   userId: string;
   firstName: string;
   lastName: string;
@@ -34,6 +35,7 @@ export function ActiveWorkersCard({
   const [sites, setSites] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [clockingOut, setClockingOut] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
@@ -62,6 +64,37 @@ export function ActiveWorkersCard({
       setError(err instanceof Error ? err.message : 'Failed to load active workers');
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleClockOut(worker: ActiveWorker) {
+    const confirmed = confirm(
+      `Clock out ${worker.firstName} ${worker.lastName}?\n\nThey have been clocked in for ${worker.currentHours.toFixed(
+        1
+      )} hours at ${worker.jobSiteName}.`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setClockingOut(worker.timeEntryId);
+      const response = await fetch(`/api/admin/clock-out/${worker.timeEntryId}`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error?.message || 'Failed to clock out worker');
+      }
+
+      // Refresh the workers list
+      await loadData();
+      alert(`Successfully clocked out ${worker.firstName} ${worker.lastName}`);
+    } catch (err) {
+      console.error('Failed to clock out worker:', err);
+      alert(err instanceof Error ? err.message : 'Failed to clock out worker');
+    } finally {
+      setClockingOut(null);
     }
   }
 
@@ -109,10 +142,10 @@ export function ActiveWorkersCard({
         <div className="space-y-3">
           {workers.map((worker) => (
             <div
-              key={worker.userId}
+              key={worker.timeEntryId}
               className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition"
             >
-              <div className="flex items-start justify-between">
+              <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <h3 className="font-medium text-gray-900">
                     {worker.firstName} {worker.lastName}
@@ -132,11 +165,20 @@ export function ActiveWorkersCard({
                     })}
                   </p>
                 </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-green-600">
-                    {worker.currentHours.toFixed(1)}
+                <div className="text-right flex flex-col items-end gap-2">
+                  <div>
+                    <div className="text-2xl font-bold text-green-600">
+                      {worker.currentHours.toFixed(1)}
+                    </div>
+                    <div className="text-xs text-gray-500">hours</div>
                   </div>
-                  <div className="text-xs text-gray-500">hours</div>
+                  <button
+                    onClick={() => handleClockOut(worker)}
+                    disabled={clockingOut === worker.timeEntryId}
+                    className="px-3 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {clockingOut === worker.timeEntryId ? 'Clocking out...' : 'Clock Out'}
+                  </button>
                 </div>
               </div>
             </div>

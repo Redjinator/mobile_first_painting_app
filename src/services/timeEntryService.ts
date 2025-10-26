@@ -507,6 +507,7 @@ export class TimeEntryService {
       const currentHours = (now.getTime() - clockIn.getTime()) / (1000 * 60 * 60);
 
       return {
+        timeEntryId: entry.id,
         userId: entry.user.id,
         firstName: entry.user.firstName,
         lastName: entry.user.lastName,

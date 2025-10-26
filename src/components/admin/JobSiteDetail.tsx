@@ -8,6 +8,7 @@ import {
 } from '@/lib/api-client/job-sites';
 import { FloorAccordion } from './FloorAccordion';
 import { AddFloorModal } from './AddFloorModal';
+import { EditJobSiteModal } from './EditJobSiteModal';
 
 interface JobSiteDetailProps {
   siteId: string;
@@ -19,6 +20,7 @@ export function JobSiteDetail({ siteId }: JobSiteDetailProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showAddFloor, setShowAddFloor] = useState(false);
+  const [showEditSite, setShowEditSite] = useState(false);
 
   useEffect(() => {
     loadSiteData();
@@ -93,7 +95,23 @@ export function JobSiteDetail({ siteId }: JobSiteDetailProps) {
       <div className="bg-white rounded-lg shadow-lg p-6">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">{site.name}</h2>
+            <div className="flex items-start gap-3 mb-2">
+              <h2 className="text-2xl font-bold text-gray-900">{site.name}</h2>
+              <button
+                onClick={() => setShowEditSite(true)}
+                className="text-blue-600 hover:text-blue-700 transition p-1"
+                title="Edit job site"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
+                </svg>
+              </button>
+            </div>
             <p className="text-gray-600 mb-4">{site.address}</p>
             {site.notes && (
               <p className="text-sm text-gray-500 italic">{site.notes}</p>
@@ -235,6 +253,18 @@ export function JobSiteDetail({ siteId }: JobSiteDetailProps) {
           onClose={() => setShowAddFloor(false)}
           onSuccess={() => {
             setShowAddFloor(false);
+            loadSiteData();
+          }}
+        />
+      )}
+
+      {/* Edit Job Site Modal */}
+      {showEditSite && site && (
+        <EditJobSiteModal
+          site={site}
+          onClose={() => setShowEditSite(false)}
+          onSuccess={() => {
+            setShowEditSite(false);
             loadSiteData();
           }}
         />
