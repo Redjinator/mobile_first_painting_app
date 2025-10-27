@@ -152,28 +152,29 @@ export function EmployeeJobSiteDetail({ jobSiteId, userId }: EmployeeJobSiteDeta
                           {area.tasks.map((task) => (
                             <div
                               key={task.id}
-                              className="bg-gray-50 rounded p-2 flex items-center justify-between"
+                              className="bg-gray-50 rounded p-2"
                             >
-                              <div className="flex-1">
+                              <div className="flex items-center justify-between mb-1">
                                 <p className="text-xs font-medium text-gray-800">
                                   {task.description}
                                 </p>
-                                <p className="text-xs text-gray-500 mt-0.5">
-                                  {task.taskType}
-                                </p>
-                              </div>
-                              <div className="text-right ml-2">
-                                <div
-                                  className={`text-xs font-bold ${
-                                    task.completionPercentage === 100
-                                      ? 'text-green-600'
-                                      : task.completionPercentage >= 50
-                                      ? 'text-blue-600'
-                                      : 'text-gray-600'
-                                  }`}
-                                >
+                                <span className="text-xs font-semibold text-gray-700 ml-2">
                                   {task.completionPercentage}%
-                                </div>
+                                </span>
+                              </div>
+                              <div className="w-full bg-gray-200 rounded-full h-1.5">
+                                <div
+                                  className={`h-1.5 rounded-full transition-all ${
+                                    task.completionPercentage === 100
+                                      ? 'bg-green-500'
+                                      : task.completionPercentage >= 50
+                                      ? 'bg-blue-500'
+                                      : task.completionPercentage >= 25
+                                      ? 'bg-yellow-500'
+                                      : 'bg-gray-400'
+                                  }`}
+                                  style={{ width: `${task.completionPercentage}%` }}
+                                />
                               </div>
                             </div>
                           ))}
