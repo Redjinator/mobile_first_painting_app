@@ -140,10 +140,33 @@ export class AreaService {
 
     // Check permissions
     if (userRole === 'EMPLOYEE') {
-      // Employees can only see areas they're assigned to
-      const isAssigned = area.assignments.some((a) => a.userId === userId);
-      if (!isAssigned) {
-        throw new UnauthorizedError('You can only view areas you are assigned to');
+      // Employees can see areas if they're assigned to the area, floor, or site
+      const isAssignedToArea = area.assignments.some((a) => a.userId === userId);
+
+      if (!isAssignedToArea) {
+        // Check if assigned to the floor
+        const floorAssignments = await prisma.assignment.findFirst({
+          where: {
+            userId,
+            assignableType: 'FLOOR',
+            assignableId: area.floorId,
+          },
+        });
+
+        if (!floorAssignments) {
+          // Check if assigned to the site
+          const siteAssignments = await prisma.assignment.findFirst({
+            where: {
+              userId,
+              assignableType: 'JOB_SITE',
+              assignableId: area.floor.jobSite.id,
+            },
+          });
+
+          if (!siteAssignments) {
+            throw new UnauthorizedError('You can only view areas you are assigned to');
+          }
+        }
       }
     }
 

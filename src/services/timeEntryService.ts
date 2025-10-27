@@ -53,27 +53,8 @@ export class TimeEntryService {
       throw new NotFoundError('Job site not found');
     }
 
-    // Validate assignment exists at any level (site, floor, or area)
-    const hasAssignment = await prisma.assignment.findFirst({
-      where: {
-        userId,
-        OR: [
-          { jobSiteId: data.jobSiteId, assignableType: 'JOB_SITE' },
-          ...(data.floorId
-            ? [{ floorId: data.floorId, assignableType: 'FLOOR' as const }]
-            : []),
-          ...(data.areaId
-            ? [{ areaId: data.areaId, assignableType: 'AREA' as const }]
-            : []),
-        ],
-      },
-    });
-
-    if (!hasAssignment) {
-      throw new BadRequestError(
-        'You are not assigned to this location. Please contact your supervisor.'
-      );
-    }
+    // Note: Employees can clock in to any job site without requiring an assignment
+    // Assignments are used for task organization but not for time tracking restrictions
 
     // Validate floor if provided
     if (data.floorId) {
