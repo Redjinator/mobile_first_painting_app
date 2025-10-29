@@ -13,7 +13,9 @@
       "Bash(ipconfig:*)",
       "Bash(findstr:*)",
       "Bash(if exist nul del /F nul)",
-      "Bash(powershell -Command \"Remove-Item -Path ''.\\nul'' -Force 2>&1\")"
+      "Bash(powershell -Command \"Remove-Item -Path ''.\\nul'' -Force 2>&1\")",
+      "Bash(npx prisma:*)",
+      "Bash(git reset:*)"
     ],
     "deny": [],
     "ask": []
