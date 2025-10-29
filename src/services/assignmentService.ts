@@ -100,7 +100,7 @@ export class AssignmentService {
       },
     });
 
-    // Get floors with their assignments and areas
+    // Get floors with their assignments, areas, and tasks
     const floors = await prisma.floor.findMany({
       where: { jobSiteId: siteId },
       include: {
@@ -119,6 +119,25 @@ export class AssignmentService {
                   },
                 },
               },
+            },
+            tasks: {
+              include: {
+                assignments: {
+                  where: {
+                    assignableType: 'TASK',
+                  },
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                      },
+                    },
+                  },
+                },
+              },
+              orderBy: { taskOrder: 'asc' },
             },
           },
         },
@@ -166,6 +185,15 @@ export class AssignmentService {
           painters: area.assignments.map((a) => ({
             assignmentId: a.id,
             ...a.user,
+          })),
+          tasks: area.tasks.map((task) => ({
+            id: task.id,
+            name: task.name,
+            taskOrder: task.taskOrder,
+            painters: task.assignments.map((a) => ({
+              assignmentId: a.id,
+              ...a.user,
+            })),
           })),
         })),
       })),
@@ -412,6 +440,96 @@ export class AssignmentService {
             id: true,
             name: true,
             areaType: true,
+          },
+        },
+      },
+    });
+  }
+
+  /**
+   * Assign painter to specific task
+   */
+  static async assignPainterToTask(
+    userId: string,
+    taskId: string,
+    assignedBy: string
+  ) {
+    // Validate user is a painter
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+
+    if (user.role !== 'EMPLOYEE') {
+      throw new BadRequestError('Only employees can be assigned to tasks');
+    }
+
+    if (!user.isActive) {
+      throw new BadRequestError('Cannot assign inactive user');
+    }
+
+    // Validate task exists
+    const task = await prisma.task.findUnique({
+      where: { id: taskId },
+      include: {
+        area: {
+          include: {
+            floor: {
+              include: { jobSite: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!task) {
+      throw new NotFoundError('Task not found');
+    }
+
+    // Check for existing assignment
+    const existing = await prisma.assignment.findUnique({
+      where: {
+        userId_assignableType_assignableId: {
+          userId,
+          assignableType: 'TASK',
+          assignableId: taskId,
+        },
+      },
+    });
+
+    if (existing) {
+      throw new BadRequestError('User is already assigned to this task');
+    }
+
+    // Create assignment
+    return prisma.assignment.create({
+      data: {
+        userId,
+        assignableType: 'TASK',
+        assignableId: taskId,
+        jobSiteId: task.area.floor.jobSiteId,
+        floorId: task.area.floorId,
+        areaId: task.areaId,
+        taskId,
+        assignedBy,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+          },
+        },
+        task: {
+          select: {
+            id: true,
+            name: true,
           },
         },
       },

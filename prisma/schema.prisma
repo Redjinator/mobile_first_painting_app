@@ -35,6 +35,7 @@ enum AssignableType {
   JOB_SITE
   FLOOR
   AREA
+  TASK
 }
 
 enum FlagType {
@@ -187,6 +188,7 @@ model Task {
   // Relations
   area         Area          @relation(fields: [areaId], references: [id], onDelete: Cascade)
   activityLogs ActivityLog[]
+  assignments  Assignment[]
 
   @@unique([areaId, taskOrder])
   @@index([areaId])
@@ -201,6 +203,7 @@ model Assignment {
   jobSiteId      String?        @map("job_site_id")
   floorId        String?        @map("floor_id")
   areaId         String?        @map("area_id")
+  taskId         String?        @map("task_id")
   assignedAt     DateTime       @default(now()) @map("assigned_at")
   assignedBy     String         @map("assigned_by")
 
@@ -210,6 +213,7 @@ model Assignment {
   jobSite  JobSite? @relation(fields: [jobSiteId], references: [id], onDelete: Cascade)
   floor    Floor?   @relation(fields: [floorId], references: [id], onDelete: Cascade)
   area     Area?    @relation(fields: [areaId], references: [id], onDelete: Cascade)
+  task     Task?    @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   @@unique([userId, assignableType, assignableId])
   @@index([userId])
@@ -217,6 +221,7 @@ model Assignment {
   @@index([jobSiteId])
   @@index([floorId])
   @@index([areaId])
+  @@index([taskId])
   @@map("assignments")
 }
 

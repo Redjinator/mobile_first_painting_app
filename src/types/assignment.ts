@@ -34,18 +34,32 @@ export interface AssignmentHierarchy {
       name: string;
       areaType: string;
       painters: {
+        assignmentId: string;
         id: string;
         firstName: string;
         lastName: string;
       }[];
+      tasks: {
+        id: string;
+        name: string;
+        taskOrder: number;
+        painters: {
+          assignmentId: string;
+          id: string;
+          firstName: string;
+          lastName: string;
+        }[];
+      }[];
     }[];
     painters: {
+      assignmentId: string;
       id: string;
       firstName: string;
       lastName: string;
     }[];
   }[];
   sitePainters: {
+    assignmentId: string;
     id: string;
     firstName: string;
     lastName: string;
