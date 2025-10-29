@@ -9,10 +9,13 @@
       "Bash(git commit:*)",
       "Bash(cat:*)",
       "Bash(rd /s /q .next)",
-      "Bash(sqlite3:*)"
+      "Bash(sqlite3:*)",
+      "Bash(ipconfig:*)",
+      "Bash(findstr:*)",
+      "Bash(if exist nul del /F nul)",
+      "Bash(powershell -Command \"Remove-Item -Path ''.\\nul'' -Force 2>&1\")"
     ],
     "deny": [],
     "ask": []
-  },
-  "dangerouslySkipPermissions": true
+  }
 }
