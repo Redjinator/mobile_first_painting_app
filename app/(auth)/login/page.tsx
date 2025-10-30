@@ -242,23 +242,6 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-
-          {/* Demo Credentials */}
-          <div className="mt-6 border-t border-gray-200 pt-6">
-            <p className="text-xs text-gray-500 text-center mb-3">
-              Demo Accounts (Development Only)
-            </p>
-            <div className="space-y-2 text-xs text-gray-600">
-              <div className="bg-gray-50 rounded p-2">
-                <p className="font-semibold">Admin:</p>
-                <p>admin@paintingbuddy.com / Admin123!</p>
-              </div>
-              <div className="bg-gray-50 rounded p-2">
-                <p className="font-semibold">Employee:</p>
-                <p>painter1@paintingbuddy.com / Painter123!</p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
